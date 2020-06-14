@@ -43,6 +43,11 @@ java -cp target/PDFJuice-1.0-SNAPSHOT-jar-with-dependencies.jar org.sj.tools.pdf
 
 The `mode` option may be `slide` or `table`, depending on which kind of information you want to extract.
 
+Examples
+===
+
+
+You can see some [examples](https://github.com/andrescg2sj/PDFJuice/tree/master/examples) of what can be done with PDFJuice so far.
 
 
 
