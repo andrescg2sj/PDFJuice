@@ -6,7 +6,7 @@ This project provides some tools that help the user to extract structured inform
 
 PDFJuice depends on [Apache PDFBox](https://pdfbox.apache.org/) to read PDF documents.
 
-There are two funtionalities available so far:
+There are two functionalities available so far:
 
 - Extract tables.
 - Extract slides.
