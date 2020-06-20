@@ -4,7 +4,7 @@ Presentation
 
 This project provides some tools that help the user to extract structured information from PDF documents. Currently, the program is able to export them to HTML.
 
-PDFJuice depends on [PDFBox](https://pdfbox.apache.org/) to read PDF documents.
+PDFJuice depends on [Apache PDFBox](https://pdfbox.apache.org/) to read PDF documents.
 
 There are two funtionalities available so far:
 
