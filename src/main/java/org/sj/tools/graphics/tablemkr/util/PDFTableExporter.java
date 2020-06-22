@@ -36,7 +36,8 @@ import org.apache.commons.cli.ParseException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.sj.tools.common.Timestamp;
-import org.sj.tools.graphics.tablemkr.frompdf.PDFTableExtractor;
+import org.sj.tools.graphics.tablemkr.frompdf.ExtractionProperties;
+import org.sj.tools.graphics.tablemkr.frompdf.PDFPageTableExtractor;
 import org.sj.tools.pdfjuice.CommonInfo;
 
 
@@ -60,18 +61,16 @@ public class PDFTableExporter implements CommonInfo
     
     String dstFilename;
     
-    double maxLineThickness = PDFTableExtractor.DEFAULT_THICKNESS;
-	double minProximity = PDFTableExtractor.DEFAULT_PROXIMITY;
-	
-	Rectangle clipRect =  null;	
-
+    ExtractionProperties properties = new ExtractionProperties();
+    
+    
 	
 	public void setMaxLineThickness(double v) {
-		maxLineThickness = v;
+		properties.setMaxLineThickness(v);
 	}
 
 	public void setMinProximity(double v) {
-		minProximity = v;
+		properties.setMinProximity(v);
 	}
 
 	/**
@@ -144,8 +143,7 @@ public class PDFTableExporter implements CommonInfo
 	}
 	
 	public void setClip(Rectangle r) {
-		clipRect = r;
-    	//System.out.println("Clipping rectangle:"+ clipRect.toString());
+		properties.setClipRect(r);
 	}
     		
     
@@ -196,9 +194,8 @@ public class PDFTableExporter implements CommonInfo
     	    doc = PDDocument.load(inFile);
     	    for(int i=0; i< doc.getNumberOfPages(); i++) {
     	    	PDPage page = doc.getPage(i);
-    	    	PDFTableExtractor engine =
-    	    			new PDFTableExtractor(page, clipRect, 
-    	    					maxLineThickness, minProximity);
+    	    	PDFPageTableExtractor engine =
+    	    			new PDFPageTableExtractor(page, properties);
     	    	engine.run();
         	    engine.writeHTMLTables(out);
     	    }

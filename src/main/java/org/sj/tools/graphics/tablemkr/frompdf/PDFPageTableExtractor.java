@@ -79,7 +79,7 @@ import java.util.logging.Logger;
 /**
  * 
  */
-public class PDFTableExtractor extends PDFGraphicsStreamEngine implements CommonInfo
+public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements CommonInfo
 {
 	Logger log = Logger.getLogger("PDFTableExtractor");
 	
@@ -107,27 +107,18 @@ public class PDFTableExtractor extends PDFGraphicsStreamEngine implements Common
 	int lineCount = 0;
 	int strokeCount = 0;
 	
-	ClippingArea clip;
     GrPath path = new GrPath();
-    
-    public static final double DEFAULT_THICKNESS = 2;
-    public static final double DEFAULT_PROXIMITY = 0.3;
-    
-    /**
-     * maximum thickness of a rectangle in order to be considered as a line.
-     */
-    double maxLineThickness = DEFAULT_THICKNESS;
 
-    /**
-     * maximum distance of two objects to be considered in the same region (table).
-     */
-    double tableThreshold = DEFAULT_PROXIMITY;
-
+    ExtractionProperties properties;
 	
 	//java.util.Vector<Line> lines = new java.util.Vector<Line>();
 	//TableMaker tmaker = new SplitTableMaker();
     //TableMaker tmaker = new GridTableMaker();
-    
+
+    public List<Table> getTables()
+    {
+    	return generatedTables;
+    }
 
     
     public PosRegionCluster<Positionable> organizeContents()
@@ -154,7 +145,7 @@ public class PDFTableExtractor extends PDFGraphicsStreamEngine implements Common
     	
     	CompoundTransform ct = new CompoundTransform();
     	ct.add(new HorizBandTransform(rc.getBounds()));
-    	ct.add(new ExpandTransform(0,tableThreshold));
+    	ct.add(new ExpandTransform(0,properties.tableThreshold));
     	//ExpandTransform t = new ExpandTransform(tableThreshold);
     	//HorizBandTransform t = ;
     	rc.partitionContent(ct, NormalComparator.getInstance());
@@ -272,10 +263,10 @@ public class PDFTableExtractor extends PDFGraphicsStreamEngine implements Common
      *
      * @param page PDF Page
      */
-    protected PDFTableExtractor(PDPage page)
+    protected PDFPageTableExtractor(PDPage page)
     {
         super(page);
-        clip = new ClippingArea();
+        properties = new ExtractionProperties();
     }
     
     /**
@@ -283,19 +274,22 @@ public class PDFTableExtractor extends PDFGraphicsStreamEngine implements Common
      *
      * @param page PDF Page
      */
-    public PDFTableExtractor(PDPage page, Rectangle clipRect)
+    public PDFPageTableExtractor(PDPage page, Rectangle clipRect)
     {
         super(page);
-        clip = new ClippingArea(clipRect);
+        properties = new ExtractionProperties(clipRect);
     }
 
-    
-    public PDFTableExtractor(PDPage page, Rectangle clipRect, double thickness, double proximity)
+
+    public PDFPageTableExtractor(PDPage page, ExtractionProperties props) {
+        super(page);
+        properties = props;
+    }
+
+    public PDFPageTableExtractor(PDPage page, Rectangle clipRect, double thickness, double proximity)
     {
         super(page);
-        clip = new ClippingArea(clipRect);
-        maxLineThickness = thickness;
-        tableThreshold = proximity;
+        properties = new ExtractionProperties(clipRect, proximity, thickness);
     }
 
 
@@ -396,7 +390,7 @@ public class PDFTableExtractor extends PDFGraphicsStreamEngine implements Common
     {
 
         Rectangle2D r = StringRegion.rectangleFromPoints(p0,p1,p2,p3);
-        if(clip.clip(r)) {
+        if(properties.clip.clip(r)) {
             log.finest(String.format("strokeRectangle %.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f\n",
                     p0.getX(), p0.getY(), p1.getX(), p1.getY(),
                     p2.getX(), p2.getY(), p3.getX(), p3.getY()));
@@ -534,7 +528,7 @@ public class PDFTableExtractor extends PDFGraphicsStreamEngine implements Common
     		} else if(s instanceof Rectangle2D) {
     			//TODO
     			Rectangle2D rect = (Rectangle2D) s;
-    			if(isVerticalStrip(rect,maxLineThickness)) {
+    			if(isVerticalStrip(rect,properties.maxLineThickness)) {
     				if(nsclr.toRGB() == 0) {
     					//tmaker.add(buildVertLine(rect));
     					lines.add(buildVertLine(rect));
@@ -542,7 +536,7 @@ public class PDFTableExtractor extends PDFGraphicsStreamEngine implements Common
     				} else {
     					log.finest("Non black vert. line");
     				}
-    			} else if(isHorizontalStrip(rect,maxLineThickness)){
+    			} else if(isHorizontalStrip(rect,properties.maxLineThickness)){
     				if(nsclr.toRGB() == 0) {
     					//tmaker.add(buildHorizLine(rect));
     					lines.add(buildHorizLine(rect));
@@ -628,7 +622,7 @@ public class PDFTableExtractor extends PDFGraphicsStreamEngine implements Common
         	System.err.println("No region");
         	throw new NullPointerException("regionText.region");
         }
-        if(clip.clip(r)) {
+        if(properties.clip.clip(r)) {
         	gstrings.add(new GraphicString(regionText.getText(), r));
         	log.fine("add strings: " +regionText.getText());
         }

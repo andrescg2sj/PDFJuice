@@ -44,6 +44,10 @@ public class ClippingArea {
 			return true;
 		return area.contains(r);
  	}
+	
+	public void set(Rectangle2D rect) {
+		area = rect;
+	}
 
 
 }
