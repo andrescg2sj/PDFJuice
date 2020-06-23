@@ -32,6 +32,8 @@ import org.junit.Assert;
 
 public class TableTest {
 	
+
+	
 	@Test
 	public void testingFillCells()
 	{
@@ -114,10 +116,56 @@ public class TableTest {
 		
 		Assert.assertEquals("min col span:",2, t.getMinColSpan(0));
 	}
+	
+	@Test
+	public void testingCopy2d() {
+		Table a = new Table(2,2);
+		a.add(0, 0, "a");
+		a.add(1, 0, "b");
+		a.add(0, 1, "c");
+		a.add(1, 1, "d");
+			
+		Table b = new Table(2,2);
+		Table.copy2d(a.cells,0,0, b.cells, 0,0, 2,2);
+		Assert.assertEquals("table content 0,0:","a", b.get(0, 0).fullText());
+		Assert.assertEquals("table content 1,0:","b", b.get(1, 0).fullText());
+		Assert.assertEquals("table content 0,1:","c", b.get(0, 1).fullText());
+		Assert.assertEquals("table content 1,1:","d", b.get(1, 1).fullText());
+
+			
+		
+	}
+
+	
+	@Test
+	public void testingMoveDataBack() {
+		Table a = Table.parseTable("a,b,c,d,e");
+		
+		a.moveDataBack(3, 0, 3, 0);
+		Assert.assertEquals("table content 0,0:","d", a.get(0, 0).fullText());
+		Assert.assertEquals("table content 1,0:","e", a.get(1, 0).fullText());
+		Assert.assertEquals("table content 2,0:","c", a.get(2, 0).fullText());
+
+		Table b = Table.parseTable("a;b;c;d;e");
+
+		b.moveDataBack(0, 2, 0, 1);
+		Assert.assertEquals("table content 0,0:","a", b.get(0, 0).fullText());
+		Assert.assertEquals("table content 1,0:","c", b.get(0, 1).fullText());
+		Assert.assertEquals("table content 2,0:","d", b.get(0, 2).fullText());
+		Assert.assertEquals("table content 3,0:","e", b.get(0, 3).fullText());
+
+	}
 
 	@Test
 	public void testingSimplifyTable() 
 	{
+		/*
+		 * +-+-+-+
+		 * |a  |c|
+		 * +-+-+-+
+		 * |b  |d|
+		 * +-+-+-+
+		 */
 		Table t = new Table(3,2);
 		t.add(0,0,"a");
 		t.add(0,1,"b");
@@ -133,7 +181,7 @@ public class TableTest {
 		Assert.assertEquals("table rows:",2, t.getRows());
 		Assert.assertEquals("table content 0,0:","a", t.get(0, 0).fullText());
 		Assert.assertEquals("table 0,0 colSpan:",1, t.get(0, 0).colSpan);
-		Assert.assertEquals("table content 1,1:","c", t.get(1, 0).fullText());
+		Assert.assertEquals("table content 1,0:","c", t.get(1, 0).fullText());
 		Assert.assertEquals("table content 1,1:","d", t.get(1, 1).fullText());
 	}
 

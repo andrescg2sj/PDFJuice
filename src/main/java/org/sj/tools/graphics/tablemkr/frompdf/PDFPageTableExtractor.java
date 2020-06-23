@@ -246,6 +246,8 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
     		Table clean = t.trim();
     		if(clean == null) {
     			out.write("null table");
+    		} else if (clean.isEmpty()) {
+    			out.write("empty table");
     		} else {
     			String s = clean.toHTML();
     			out.write(s);

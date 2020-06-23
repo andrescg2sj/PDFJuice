@@ -85,6 +85,11 @@ public class Table implements CommonInfo {
 	
 	//TODO: Test
 	public Table subTable(int col, int row, int numCols, int numRows) {
+		return new Table(submatrix(col, row, numCols, numRows));
+	}
+	
+	@Deprecated
+	public Table subTable_old(int col, int row, int numCols, int numRows) {
 		Cell newCells[][] = new Cell[numCols][numRows];
 		
 		for(int r=0;r<numRows;r++) {
@@ -218,9 +223,12 @@ public class Table implements CommonInfo {
 			int decrement = minColSpan - 1;
 			for(int row =0; row < getRows(); row++) {
 				Cell c = cells[col][row];
-				if(c != null && !(c instanceof HiddenCell)) {
-					c.colSpan -= decrement;
+				if(c == null) {
+					throw new NullPointerException("at row: "+ row);
 				}
+				if(!(c instanceof HiddenCell)) {
+					c.colSpan -= decrement;
+				} 
 			}
 			return decrement;
 		} else {
@@ -241,7 +249,10 @@ public class Table implements CommonInfo {
 			int decrement = minRowSpan - 1;
 			for(int col =0; col < getCols(); col++) {
 				Cell c = cells[col][row];
-				if(c != null && !(c instanceof HiddenCell)) {
+				if(c == null) {
+					throw new NullPointerException("at col:" +c);
+				}
+				if(!(c instanceof HiddenCell)) {
 					c.rowSpan -= decrement;
 				}
 			}
@@ -251,8 +262,20 @@ public class Table implements CommonInfo {
 		}
 	}
 
+
 	
 	void moveDataBack(int col, int row, int backCols, int backRows) {
+		int numCols = this.getCols() - col;
+		int numRows = this.getRows() - row;
+		
+		Cell data[][] = submatrix(col, row, numCols, numRows);
+		//Table debug = new Table(data);
+		//System.out.println(debug.toHTML());
+		copy2d(data,0,0,cells, col-backCols, row-backRows, numCols, numRows);
+	}
+	
+	@Deprecated
+	void moveDataBack_old(int col, int row, int backCols, int backRows) {
 		if(backCols == 0 && backRows == 0)
 			return;
 		//System.out.println("  move:"+col+","+row);
@@ -287,23 +310,86 @@ public class Table implements CommonInfo {
 		
 	}
 	
+	static void copy2d(Cell src[][], int srcCol, int srcRow, 
+			Cell dst[][], int dstCol, int dstRow, int numCols, int numRows) {
+
+		for(int r=0;r<numRows;r++) {
+			for(int c=0;c<numCols;c++) {
+				//FIXME
+				Cell model = src[c+srcCol][r+srcRow];
+				
+				
+				if(model instanceof HiddenCell) {
+					
+					HiddenCell hc = (HiddenCell) model;
+					if(hc.hiddenBy.col < srcCol || hc.hiddenBy.col < srcRow) {
+						hc.hiddenBy.col = Math.max(0, hc.hiddenBy.col-srcCol+dstCol);
+						hc.hiddenBy.row = Math.max(0, hc.hiddenBy.row-srcRow+dstRow);
+						hc.hiddenBy.cell = dst[hc.hiddenBy.col][hc.hiddenBy.row]; 
+					}
+				} 
+				int dstNumRows = dst[0].length;
+				int dstNumCols = dst.length;
+				if((r + model.rowSpan >= dstNumRows) ||
+						(c + model.colSpan >= dstNumCols)) {
+					int newCols = Math.min(model.colSpan, numCols - c);
+					int newRows = Math.min(model.rowSpan, numRows - r);
+					dst[c+dstCol][r+dstRow] = new Cell(newCols, newRows, model.contents);
+					
+				} else {
+					dst[c+dstCol][r+dstRow] = model;
+				}
+			}
+		}
+		
+	}
 
 	
+	Cell[][] submatrix(int col, int row, int numCols, int numRows) {
+		Cell newCells[][] = new Cell[numCols][numRows];
+		copy2d(cells, col, row, newCells, 0,0, numCols, numRows);
+		return newCells;
+	}
+	
+
+	public static Table parseTable(String str) {
+		String lines[] = str.split(";");
+		String parts[] = lines[0].split(",");
+		int cols = parts.length;
+		int rows = lines.length;
+		Table t = new Table(cols,rows);
+		
+		for(int j=0; j< rows;j++) {
+			String cells[] = lines[j].split(",");
+			for(int i=0;i<cells.length; i++) {
+				t.add(i, j, cells[i]);
+			}
+			
+		}
+		return t;
+	}
+
 	
 	/**
 	 * 
 	 */
 	public void simplifyTable() {
 		int col = 0;
-		//System.out.println("Simplify cols");
+		System.out.println("Simplify:");
+		System.out.println(this.toHTML());
 		int deletedCols = 0;
 		int numCols = getCols();
+		System.out.println("numCols:" + numCols);
 		while(col < (numCols-deletedCols)) {
+			try {
 			int cols = simplifyCol(col);
 			//System.out.println("  delete cols:"+cols);
 			deletedCols+=cols;
 			//System.out.println("  sum="+deletedCols);
 			moveDataBack(col+cols+1,0, cols,0);
+			} catch(NullPointerException ne) {
+				System.out.println("Malformed table: "+ne);
+			}
 			col++;
 		}
 		//System.out.println("  deleted cols="+deletedCols);
@@ -312,17 +398,22 @@ public class Table implements CommonInfo {
 		int deletedRows = 0;
 		//System.out.println("Simplify rows");
 		while(row < (numRows-deletedRows)) {
-			int rows = simplifyRow(row);
-			//System.out.println("  delete rows:"+rows);
-			deletedRows += rows;
-			//System.out.println("  sum="+deletedRows);
+			try { 
+				int rows = simplifyRow(row);
+				//System.out.println("  delete rows:"+rows);
+				deletedRows += rows;
+				//System.out.println("  sum="+deletedRows);
 
-			moveDataBack(0,row+rows+1, 0, rows);
+				moveDataBack(0,row+rows+1, 0, rows);
+			} catch(NullPointerException ne) {
+				System.out.println("Malformed table: "+ne);
+			}
 			row++;
 		}
 
 		if(deletedCols > 0 || deletedRows > 0) {
-			cells = subTable(0,0,numCols-deletedCols, numRows-deletedRows).cells;
+			//cells = subTable(0,0,numCols-deletedCols, numRows-deletedRows).cells;
+			cells = submatrix(0,0,numCols-deletedCols, numRows-deletedRows);
 		}
 	}
 	
@@ -333,11 +424,18 @@ public class Table implements CommonInfo {
 		}
 		return count;
 	}
+	
+	public boolean isEmpty() {
+		for(int c=0;c<getCols();c++) {
+			if(!isEmptyCol(c)) return false;
+		}
+		return true;
+	}
 
 	
 	public boolean isEmptyRow(int row) {
 		for(int c=0;c<getCols();c++) {
-			if(!cells[c][row].isEmpty()) return false;
+			if(cells[c][row] != null && !cells[c][row].isEmpty()) return false;
 		}
 		return true;
 	}
@@ -354,7 +452,7 @@ public class Table implements CommonInfo {
 
 	public boolean isEmptyCol(int col) {
 		for(int r=0;r<getRows();r++) {
-			if(!cells[col][r].isEmpty()) return false;
+			if(cells[col][r] != null && !cells[col][r].isEmpty()) return false;
 		}
 		return true;
 	}
@@ -375,10 +473,6 @@ public class Table implements CommonInfo {
 	}
 	
 	
-	/*Cell[][] copy(Cell data[][]) {
-		//Cell newData[][] = new
-		
-	}*/
 	
 	public int getRows() {
 		return cells[0].length;

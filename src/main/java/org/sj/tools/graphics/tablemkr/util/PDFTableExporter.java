@@ -193,6 +193,7 @@ public class PDFTableExporter implements CommonInfo
 
     	    doc = PDDocument.load(inFile);
     	    for(int i=0; i< doc.getNumberOfPages(); i++) {
+    	    	System.out.println("Page " + i);
     	    	PDPage page = doc.getPage(i);
     	    	PDFPageTableExtractor engine =
     	    			new PDFPageTableExtractor(page, properties);
