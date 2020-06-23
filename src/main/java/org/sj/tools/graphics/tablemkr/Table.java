@@ -77,6 +77,15 @@ public class Table implements CommonInfo {
 		}
 	}
 	
+	static int matrixNumRows(Cell data[][]) {
+		return data[0].length;
+	}
+	
+	static int matrixNumCols(Cell data[][]) {
+		return data.length;
+	}
+
+	
 	
 	public Cell get(int col, int row)
 	{
@@ -328,8 +337,8 @@ public class Table implements CommonInfo {
 						hc.hiddenBy.cell = dst[hc.hiddenBy.col][hc.hiddenBy.row]; 
 					}
 				} 
-				int dstNumRows = dst[0].length;
-				int dstNumCols = dst.length;
+				int dstNumRows = matrixNumRows(dst);
+				int dstNumCols = matrixNumCols(dst);
 				if((r + model.rowSpan >= dstNumRows) ||
 						(c + model.colSpan >= dstNumCols)) {
 					int newCols = Math.min(model.colSpan, numCols - c);
@@ -375,11 +384,11 @@ public class Table implements CommonInfo {
 	 */
 	public void simplifyTable() {
 		int col = 0;
-		System.out.println("Simplify:");
-		System.out.println(this.toHTML());
+		//System.out.println("Simplify:");
+		//System.out.println(this.toHTML());
 		int deletedCols = 0;
 		int numCols = getCols();
-		System.out.println("numCols:" + numCols);
+		//System.out.println("numCols:" + numCols);
 		while(col < (numCols-deletedCols)) {
 			try {
 			int cols = simplifyCol(col);
@@ -475,11 +484,11 @@ public class Table implements CommonInfo {
 	
 	
 	public int getRows() {
-		return cells[0].length;
+		return matrixNumRows(cells);
 	}
 	
 	public int getCols() {
-		return cells.length;
+		return matrixNumCols(cells);
 	}
 	
 	public Cell getCell(int col, int row) {
