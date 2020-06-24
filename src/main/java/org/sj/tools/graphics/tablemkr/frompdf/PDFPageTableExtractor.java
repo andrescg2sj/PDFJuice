@@ -176,6 +176,8 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
         			java.util.Vector<Table> parts = t.divideOnEmptyRow();
         			for(Table p: parts) {
         				//TODO
+        		    	log.info("Simplify: ");
+        		    	log.info(p.toHTML());
         				p.simplifyTable();
         				tables.add(p);
         			}

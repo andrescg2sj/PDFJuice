@@ -192,12 +192,19 @@ public class PDFTableExporter implements CommonInfo
         	
 
     	    doc = PDDocument.load(inFile);
+    	    int countFailed = 0;
     	    for(int i=0; i< doc.getNumberOfPages(); i++) {
     	    	System.out.println("Page " + i);
     	    	PDPage page = doc.getPage(i);
     	    	PDFPageTableExtractor engine =
     	    			new PDFPageTableExtractor(page, properties);
-    	    	engine.run();
+    	    	try {
+	    	    	engine.run();
+    	    	} catch(RuntimeException re) {
+        	    	System.out.println("Page " + i + " failed!");
+    	    		countFailed ++;
+    	    		re.printStackTrace();
+    	    	}
         	    engine.writeHTMLTables(out);
     	    }
     	    doc.close();
@@ -205,7 +212,10 @@ public class PDFTableExporter implements CommonInfo
     	    writeHTMLTail(out);
         	out.close();
 
-    	    	
+        	if(countFailed > 0) {
+        	    System.out.println(countFailed + " pages failed during conversion.");
+        		
+        	}
     	    //System.out.println("------------------");
     	    //System.out.println(engine.cluster.toHTML());
             

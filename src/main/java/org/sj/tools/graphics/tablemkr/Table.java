@@ -274,13 +274,25 @@ public class Table implements CommonInfo {
 
 	
 	void moveDataBack(int col, int row, int backCols, int backRows) {
+		if(backCols == 0 && backRows == 0)
+			return;
 		int numCols = this.getCols() - col;
 		int numRows = this.getRows() - row;
-		
-		Cell data[][] = submatrix(col, row, numCols, numRows);
+		Cell data[][] = null;
+		try {
+			data = submatrix(col, row, numCols, numRows);
 		//Table debug = new Table(data);
 		//System.out.println(debug.toHTML());
-		copy2d(data,0,0,cells, col-backCols, row-backRows, numCols, numRows);
+			copy2d(data,0,0,cells, col-backCols, row-backRows, numCols, numRows);
+		} catch(ArrayIndexOutOfBoundsException e) {
+			System.err.println(String.format("col=%d row=%d backCols=%d backRows=%d",
+					col,row, backCols,backRows));
+			if(data != null) {
+				System.err.println(String.format("data.cols=%d data.rows=%d",
+					matrixNumCols(data),matrixNumRows(data)));
+			}
+			e.printStackTrace();
+		}
 	}
 	
 	@Deprecated
@@ -397,7 +409,7 @@ public class Table implements CommonInfo {
 			//System.out.println("  sum="+deletedCols);
 			moveDataBack(col+cols+1,0, cols,0);
 			} catch(NullPointerException ne) {
-				System.out.println("Malformed table: "+ne);
+				System.out.println(String.format("Malformed table(col=%d): %s",col,ne));
 			}
 			col++;
 		}
@@ -415,7 +427,7 @@ public class Table implements CommonInfo {
 
 				moveDataBack(0,row+rows+1, 0, rows);
 			} catch(NullPointerException ne) {
-				System.out.println("Malformed table: "+ne);
+				System.out.println(String.format("Malformed table(row=%d): %s",row,ne));
 			}
 			row++;
 		}

@@ -31,6 +31,7 @@ import org.sj.tools.graphics.sectorizer.GraphicString;
 import org.sj.tools.graphics.tablemkr.graphtrace.SvgTrace;
 
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public abstract class TableMaker
 {
@@ -185,9 +186,11 @@ public abstract class TableMaker
      * @param areas
      */
     public void toSVG(Vector<Area> areas) {
-    	log.fine("Exporting areas.");
-    	tracer.exportAreasAndGStrings(areas, gstrings);
-    	log.fine("   GStrings: "+gstrings.size());
+    	log.finest("Exporting areas.");
+    	if(log.getLevel() == Level.FINEST) { 
+    		tracer.exportAreasAndGStrings(areas, gstrings);
+    	}
+    	log.finest("   GStrings: "+gstrings.size());
 	//	tracer.exportAreasAndText(areas,);
     }
 
