@@ -210,7 +210,7 @@ public class PosRegionCluster<E extends Positionable>  {
 	
 	public void sortRegions()
 	{
-		sortRegions(false);
+		sortRegions(NormalComparator.getInstance());
 	}
 	
 	public void sortRegions(Comparator<Positionable> comp) {
@@ -364,6 +364,7 @@ public class PosRegionCluster<E extends Positionable>  {
 		System.out.println("After melting: "+regions.size());
 		
 	}
+	
 	
 	
 

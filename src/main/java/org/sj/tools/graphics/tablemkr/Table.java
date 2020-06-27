@@ -20,6 +20,7 @@
 
 package org.sj.tools.graphics.tablemkr;
 
+import java.util.Collections;
 import java.util.Vector;
 
 import org.sj.tools.pdfjuice.CommonInfo;
@@ -176,6 +177,7 @@ public class Table implements CommonInfo {
 			Table t = this.subTable(0, firstRow, getCols(), getRows()-firstRow);
 			tables.add(t);
 		}
+		Collections.reverse(tables);
 		return tables;
 	}
 	

@@ -52,15 +52,15 @@ public class StrRegionCluster extends PosRegionCluster<GraphicString> implements
 		return strVect;
 	}
 	
+	/**
+	 * Fills this cluster only with objects that match the template class. 
+	 * @param cluster
+	 */
 	public void filterCopy(PosRegionCluster<Positionable> cluster) {
 		for(ContentRegion<Positionable> cr: cluster.regions) {
-			ContentRegion<GraphicString> crs = new ContentRegion<GraphicString>(cr.getBounds()); 
-			for(Positionable p: cr.contents) {
-				if(p instanceof GraphicString) {
-					crs.add((GraphicString) p);
-				}
-			}
-			this.pushRegion(crs);
+			StringRegion sr = new StringRegion(cr.getBounds());
+			sr.filterCopy(cr);
+			this.pushRegion(sr);
 		}
 	}
 

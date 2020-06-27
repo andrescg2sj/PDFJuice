@@ -84,4 +84,17 @@ public class StringRegion extends ContentRegion<GraphicString> {
 	}
 
 	
+	/**
+	 * Fills this cluster only with objects that match the template class. 
+	 * @param cluster
+	 */
+	public void filterCopy(ContentRegion<Positionable> region) {
+		for(Positionable p: region.contents) {
+			if(p instanceof GraphicString) {
+				this.add((GraphicString) p);
+			}
+		}
+	}
+
+	
 }

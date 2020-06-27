@@ -38,6 +38,7 @@ import org.sj.tools.graphics.sectorizer.HorizBandTransform;
 import org.sj.tools.graphics.sectorizer.NormalComparator;
 import org.sj.tools.graphics.sectorizer.PosRegionCluster;
 import org.sj.tools.graphics.sectorizer.Positionable;
+import org.sj.tools.graphics.sectorizer.ReverseYComparator;
 import org.sj.tools.graphics.sectorizer.CompoundTransform;
 import org.sj.tools.graphics.sectorizer.ContentRegion;
 import org.sj.tools.graphics.sectorizer.ExpandTransform;
@@ -124,10 +125,11 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
     public PosRegionCluster<Positionable> organizeContents()
     {
 		PosRegionCluster<Positionable> rc = new PosRegionCluster<Positionable>();
+		
     	
     	for(TLine l: lines) {
     		if(l == null) {
-    			System.err.println("Attepmting ot add null line");
+    			log.warning("Attepmting ot add null line");
     		} else {
     			rc.push(l);
     		}
@@ -136,20 +138,24 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
 
     	for(GraphicString gs: gstrings) {
     		if(gs == null) {
-    			System.err.println("Attepmting ot add null GraphicString");
+    			log.warning("Attepmting ot add null GraphicString");
     		} else {
     			rc.push(gs);
     		}
     	}
     	log.finest("objects added: "+rc.countRemaining());
     	
+    	
     	CompoundTransform ct = new CompoundTransform();
     	ct.add(new HorizBandTransform(rc.getBounds()));
     	ct.add(new ExpandTransform(0,properties.tableThreshold));
     	//ExpandTransform t = new ExpandTransform(tableThreshold);
     	//HorizBandTransform t = ;
+
     	rc.partitionContent(ct, NormalComparator.getInstance());
-    	//rc.partitionContent(ht, NormalComparator.getInstance());
+    	
+    	//rc.sortRegions();
+    	//rc.sortReverseYRegions();
     	
     	//rc.partitionContent(tableThreshold);
     	
@@ -195,27 +201,28 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
     	for(int i=0; i<)
     }*/
     
+    protected void logRegion(ContentRegion<Positionable> reg) {
+    	log.info("    elements: "+reg.countElements());
+    	StringRegion sr = new StringRegion(reg.getBounds());
+    	sr.filterCopy(reg);
+    	if(sr.countElements() > 0) {
+    		log.info("   Text:" + sr.fullString());
+    	}
+    }
+    
     public List<TableMaker> createTableMakers() {
     	PosRegionCluster<Positionable> cluster = organizeContents();
     	LinkedList<TableMaker> makers = new LinkedList<TableMaker>();
 
     	log.info("Regions: "+cluster.getNumberOfRegions());
     	log.info("Remaining: "+cluster.countRemaining());
-    	
-    	StrRegionCluster strctr = new StrRegionCluster();
-    	strctr.filterCopy(cluster);
-    	
-    	ContentRegion<GraphicString> cr = strctr.find("Actividades");
-    	if(cr != null) {
-    		log.info("Found. elements:"+cr.countElements());
-    	}
-    	
+    	    	
 
     	for(int i=0;i<cluster.getNumberOfRegions(); i++) {
     		ContentRegion<Positionable> r = cluster.getRegion(i);
     		GridTableMaker tmaker = new GridTableMaker();
         	log.info("  Region*: "+i);
-        	log.info("    elements: "+r.countElements());
+        	logRegion(r);
 
     		Iterator<Positionable> it = r.contentIterator();
     		
