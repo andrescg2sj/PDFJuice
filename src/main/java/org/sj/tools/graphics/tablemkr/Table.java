@@ -93,6 +93,14 @@ public class Table implements CommonInfo {
 		return cells[col][row];
 	}
 	
+	public Vector<String> getContents(int col, int row) {
+		if(cells[col][row] instanceof HiddenCell) {
+			HiddenCell hc = (HiddenCell) cells[col][row];
+			return hc.hiddenBy.cell.contents;
+		} 
+		return cells[col][row].contents; 
+	}
+	
 	//TODO: Test
 	public Table subTable(int col, int row, int numCols, int numRows) {
 		return new Table(submatrix(col, row, numCols, numRows));

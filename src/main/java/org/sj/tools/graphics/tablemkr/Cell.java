@@ -93,4 +93,12 @@ public class Cell {
 		return String.format("Cell{size:%d,%d}", colSpan, rowSpan);
 	}
 	
+	public int getColSpan() {
+		return colSpan;
+	}
+	
+	public int getRowSpan() {
+		return rowSpan;
+	}
+	
 }
