@@ -54,9 +54,9 @@ public class CellLocation {
 		return col;
 	}
 	
-	public void add(GraphicString gstr)
+	public void add(String str)
 	{
-		cell.add(gstr);
+		cell.add(str);
 	}
 	
 	public boolean contains(CellLocation cloc) 

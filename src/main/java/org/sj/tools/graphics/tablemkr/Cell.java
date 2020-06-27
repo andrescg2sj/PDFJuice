@@ -20,6 +20,7 @@
 
 package org.sj.tools.graphics.tablemkr;
 
+import java.util.Collection;
 import java.util.Vector;
 
 import org.sj.tools.graphics.sectorizer.GraphicString;
@@ -31,26 +32,26 @@ public class Cell {
 	int rowSpan = 1;
 	
 	//TODO: What class?
-	Vector<GraphicString> contents;
+	Vector<String> contents;
 	//String content;
 	
 	public Cell(int hspan, int vspan) {
 		colSpan = hspan;
 		rowSpan = vspan;
-		contents = new Vector<GraphicString>();
+		contents = new Vector<String>();
 	}
 
-	Cell(int hspan, int vspan, Vector<GraphicString> data) {
+	Cell(int hspan, int vspan, Vector<String> data) {
 		colSpan = hspan;
 		rowSpan = vspan;
 		contents = data;
 	}
 
-	public void add(GraphicString gstr) {
+	public void add(String gstr) {
 		contents.add(gstr);
 	}
 	
-    void addAll(Vector<GraphicString> cont)
+    void addAll(Collection<String> cont)
     {
     	/*
     	if(this.contains(gstr.getBounds()))
@@ -59,7 +60,7 @@ public class Cell {
     	if(cont == null) {
     		System.err.println("Warning! Trying to add null content");
     	} else {
-    		contents = cont;
+    		contents.addAll(cont);
     	}
     }
     
@@ -73,8 +74,8 @@ public class Cell {
     
     public String fullText() {
     	String t = "";
-    	for(GraphicString gs : contents) {
-    		t += gs.getText();
+    	for(String s : contents) {
+    		t += s;
     	}
     	return t;
     }
@@ -82,10 +83,10 @@ public class Cell {
 	
 	public String getString(int i) {
 		if(i>=contents.size()) throw new ArrayIndexOutOfBoundsException("getString: i="+i);
-		GraphicString gstr = contents.get(i);
-		if(gstr.getText() == null)
-			throw new NullPointerException("GStr has null text. i="+i);
-		return contents.get(i).getText();
+		String str = contents.get(i);
+		if(str == null)
+			throw new NullPointerException("null text. i="+i);
+		return contents.get(i);
 	}
 	
 	public String toString() {

@@ -23,6 +23,7 @@ package org.sj.tools.graphics.tablemkr;
 import java.awt.geom.Rectangle2D;
 
 import org.sj.tools.graphics.sectorizer.GraphicString;
+import org.sj.tools.graphics.sectorizer.StringRegion;
 
 public class Frame {
 
@@ -161,14 +162,17 @@ public class Frame {
     public CellLocation textLocation(GraphicString gstr, double threshold) {
     	Rectangle2D r = gstr.getBounds();
     	CellLocation cloc = rectToLoc(r, threshold);
-    	cloc.add(gstr);
+    	cloc.add(gstr.getText());
     	return cloc;
     }
 	
 	public CellLocation areaToCellLoc(Area a, double threshold) {
 		Rectangle2D r = a.getBounds();
     	CellLocation cloc = rectToLoc(r, threshold);
-    	cloc.cell.addAll(a.content);
+    	//TODO: change all "Areas" to StringRegions
+    	StringRegion sr =  new StringRegion(a.getBounds());
+    	sr.addAll(a.content);
+    	cloc.cell.addAll(sr.getStrings());
     	return cloc;
 	}
 	

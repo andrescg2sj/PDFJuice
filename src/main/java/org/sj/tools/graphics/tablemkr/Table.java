@@ -67,13 +67,13 @@ public class Table implements CommonInfo {
 		if(cells[col][row] == null) {
 			Cell c = new Cell(1,1);
 			//TODO: remove GraphicStrings ...
-			c.add(new GraphicString(str, null));
+			c.add(str);
 			cells[col][row] = c;
 			
 		} else if(cells[col][row] instanceof HiddenCell) {
 			//TODO
 		} else {
-			cells[col][row].add(new GraphicString(str,null));
+			cells[col][row].add(str);
 
 		}
 	}

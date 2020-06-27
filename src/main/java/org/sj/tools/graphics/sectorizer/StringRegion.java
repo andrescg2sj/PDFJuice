@@ -23,6 +23,7 @@ package org.sj.tools.graphics.sectorizer;
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,7 +49,9 @@ public class StringRegion extends ContentRegion<GraphicString> {
 	
 	//public static String getText(GraphicsString )
 	
-	
+	public void addAll(Collection<GraphicString> gs) {
+		this.contents.addAll(gs);
+	}
 	
 	
 	public List<String> getStrings() 
