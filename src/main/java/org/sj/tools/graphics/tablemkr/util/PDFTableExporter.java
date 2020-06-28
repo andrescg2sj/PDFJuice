@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -36,6 +37,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.sj.tools.common.Timestamp;
+import org.sj.tools.graphics.tablemkr.Table;
 import org.sj.tools.graphics.tablemkr.frompdf.ExtractionProperties;
 import org.sj.tools.graphics.tablemkr.frompdf.PDFPageTableExtractor;
 import org.sj.tools.pdfjuice.CommonInfo;
@@ -176,6 +178,17 @@ public class PDFTableExporter implements CommonInfo
     {
     	out.write("</body></html>");
     }
+    
+    public void writeHTMLTables(List<Table> tables, OutputStreamWriter out) throws IOException {
+    	
+    	for(Table t: tables) {
+    		String s = t.toHTML();
+    		out.write(s);
+			out.write("<br/>"+CommonInfo.NEW_LINE);
+
+    	}
+    }
+
 
     
     public void run(String srcPath)
@@ -205,7 +218,8 @@ public class PDFTableExporter implements CommonInfo
     	    		countFailed ++;
     	    		re.printStackTrace();
     	    	}
-        	    engine.writeHTMLTables(out);
+    	    	List<Table> tables = engine.getCleanTables();
+        	    writeHTMLTables(tables, out);
     	    }
     	    doc.close();
     	    

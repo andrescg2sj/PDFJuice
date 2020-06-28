@@ -333,7 +333,9 @@ public class PosRegionCluster<E extends Positionable>  {
 	{
 		Vector<ContentRegion<E>> newRegions = new Vector<ContentRegion<E>>();
 		for(E obj: remaining) {
-			Rectangle2D r = transf.transform(obj.getBounds());
+			Rectangle2D r = obj.getBounds();
+			if(transf != null)
+				r = transf.transform(r);
 			ContentRegion<E> cr = new ContentRegion<E>(r);
 			cr.add(obj);
 			if(cr.countElements() == 0) {

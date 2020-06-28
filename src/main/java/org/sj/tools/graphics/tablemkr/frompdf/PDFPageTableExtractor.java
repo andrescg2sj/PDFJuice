@@ -248,24 +248,19 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
 
     }
     
-    public void writeHTMLTables(OutputStreamWriter out) throws IOException {
+    public List<Table> getCleanTables() {
     	List<Table> tables = createTables();
+    	List<Table> cleanTables = new LinkedList<Table>();
     	
     	for(Table t: tables) {
     		Table clean = t.trim();
-    		if(clean == null) {
-    			out.write("null table");
-    		} else if (clean.isEmpty()) {
-    			out.write("empty table");
-    		} else {
-    			String s = clean.toHTML();
-    			out.write(s);
+    		if(clean != null && !clean.isEmpty() ) {
+    			cleanTables.add(clean);
     		}
-			out.write("<br/>"+CommonInfo.NEW_LINE);
-
     	}
-
+    	return cleanTables;
     }
+    
     
 
     

@@ -21,8 +21,13 @@
 package org.sj.tools.graphics.tablemkr;
 
 import java.awt.geom.Rectangle2D;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.sj.tools.graphics.sectorizer.ContentRegion;
 import org.sj.tools.graphics.sectorizer.GraphicString;
+import org.sj.tools.graphics.sectorizer.HorizBandTransform;
+import org.sj.tools.graphics.sectorizer.StrRegionCluster;
 import org.sj.tools.graphics.sectorizer.StringRegion;
 
 public class Frame {
@@ -165,6 +170,27 @@ public class Frame {
     	cloc.add(gstr.getText());
     	return cloc;
     }
+    
+    
+    public List<String> getLines(StringRegion sr) {
+    	StrRegionCluster c = new StrRegionCluster();
+    	
+    	c.pushRegion(sr);
+    	c.clearRegions();
+    	c.remainingToRegions(null);
+    	c.sortReverseYRegions();
+    	Rectangle2D bounds = sr.getBounds();
+    	HorizBandTransform hb = new HorizBandTransform(bounds);
+    	c.transformRegions(hb);
+    	c.meltRegions();
+    	List<String> lines = new LinkedList<String>();
+    	for(int i=0; i< c.getNumberOfRegions(); i++) {
+    		ContentRegion<GraphicString> cr = c.getRegion(i);
+    		StringRegion scr = new StringRegion(cr);
+    		lines.add(String.join("", scr.getStrings()));
+    	}
+    	return lines;
+    }
 	
 	public CellLocation areaToCellLoc(Area a, double threshold) {
 		Rectangle2D r = a.getBounds();
@@ -172,7 +198,8 @@ public class Frame {
     	//TODO: change all "Areas" to StringRegions
     	StringRegion sr =  new StringRegion(a.getBounds());
     	sr.addAll(a.content);
-    	cloc.cell.addAll(sr.getStrings());
+    	cloc.cell.addAll(getLines(sr));
+    	//cloc.cell.addAll(sr.getStrings());
     	return cloc;
 	}
 	

@@ -43,7 +43,9 @@ public class PDFTableExtractor {
 	    			new PDFPageTableExtractor(page, properties); 
 	    		//TODO: specify extraction properties. 
 	    	engine.run();
-	    	tables.addAll(engine.getTables());
+	    	List<Table> pageTables = engine.getCleanTables();
+	    	//engine.getTables();
+	    	tables.addAll(pageTables);
 	    }
 	    doc.close();
 	    
@@ -61,7 +63,7 @@ public class PDFTableExtractor {
 		if(tables == null) {
 			tables = new LinkedList<Table>();
 			generateTables();
-		}
+		} 
 		return tables;
 	}
 
