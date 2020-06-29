@@ -32,7 +32,7 @@ Generate examples:
 Output files are already available in the repository. They will be overwritten.
 
 ```
-java -cp target/PDFJuice-1.1-SNAPSHOT-jar-with-dependencies.jar org.sj.tools.pdfjuice.ExampleGenerator
+java -cp target/PDFJuice-1.2-SNAPSHOT-jar-with-dependencies.jar org.sj.tools.pdfjuice.ExampleGenerator
 ```
 
 
@@ -40,7 +40,7 @@ Use on specific files
 -----
 
 ```
-java -cp target/PDFJuice-1.1-SNAPSHOT-jar-with-dependencies.jar org.sj.tools.pdfjuice.PDFJuice -m [mode] -i [input-filename] -o [output-filename]
+java -cp target/PDFJuice-1.2-SNAPSHOT-jar-with-dependencies.jar org.sj.tools.pdfjuice.PDFJuice -m [mode] -i [input-filename] -o [output-filename]
 ```
 
 The `mode` option may be `slide` or `table`, depending on which kind of information you want to extract.
