@@ -119,13 +119,13 @@ public class GridTableMaker extends TableMaker {
 
     	//FIXME: encapsulate? superclass method?
        	for(Area a: areas) {
-			System.out.println("Build location: " + a.toString());
+			//System.out.println("Build location: " + a.toString());
 			a.sort(ReverseYComparator.getInstance());
     		CellLocation clo = frame.areaToCellLoc(a, this.collisionThreshold);
     		if(clo == null)
     			throw new NullPointerException("Frame created a null CellLocation");
     		try {
-				System.out.println("Testing: c:" + clo.col+", r:"+clo.row);
+				//System.out.println("Testing: c:" + clo.col+", r:"+clo.row);
     			if(table.get(clo.col,clo.row) != null) {
     				table.cells[clo.col][clo.row].contents = clo.cell.contents;
     			} else {
