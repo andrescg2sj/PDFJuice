@@ -29,6 +29,7 @@ import java.awt.geom.Line2D;
 import org.sj.tools.graphics.sectorizer.ExpandTransform;
 import org.sj.tools.graphics.sectorizer.Positionable;
 
+//TODO: extend Line2D
 public class TLine implements Positionable
 {
     Point2D a, b;
@@ -79,6 +80,10 @@ public class TLine implements Positionable
 	// TODO: Line should extend Line2D
 	return new Line2D.Double(a, b);
     }
+    
+    public TLine(Line2D line) {
+    	init(line.getP1(), line.getP2());
+    }
 
     public TLine(double x1, double y1, double x2, double y2)
     {
@@ -88,10 +93,14 @@ public class TLine implements Positionable
 	this.b = points[1];
     }
     
+    private void init(Point2D _a, Point2D _b) {
+    	Point2D points[] = sorted(_a,_b);
+    	this.a = points[0];
+    	this.b = points[1];
+    }
+    
     public TLine(Point2D _a, Point2D _b) {
-	Point2D points[] = sorted(_a,_b);
-	this.a = points[0];
-	this.b = points[1];
+    	init(_a,_b);
     }
 
     public double getWidth() {

@@ -17,6 +17,13 @@ public class PDFJuice
     static String DEFAULT_PATH = "res/CEPI-1-1.pdf";
     //static String DEFAULT_PATH = "res/test-1cell.pdf";
     
+	static {
+	      System.setProperty("java.util.logging.config.file",
+	              "./logging.properties");
+	      //must initialize loggers after setting above property
+	      //LOGGER = Logger.getLogger(MyClass.class.getName());
+	  }
+
 
 	
     public static void main(String args[]) {
@@ -34,7 +41,7 @@ public class PDFJuice
         optOutput.setRequired(true);
         options.addOption(optOutput);
         
-        Option optMode = new Option("m", "mode", true, "extraction mode: slide|table");
+        Option optMode = new Option("m", "mode", true, "extraction mode: slide|table|text");
         optMode.setRequired(true);
         options.addOption(optMode);
 
@@ -55,11 +62,13 @@ public class PDFJuice
     			String sMode = cmd.getOptionValue("m"); 
     			if("slide".equals(sMode)) {
     				slidesToHtml(inFilename, outFilename);
-
     			} else if("table".equals(sMode)) {
     	    		PDFTableExporter proc = PDFTableExporter.parseOptions(remaining);
+    	    		//proc.setShapeDetection(true);
     	    		proc.setDestination(outFilename);
     	    		proc.run(inFilename);
+    			} else if("text".equals(sMode)) {
+    				slidesToText(inFilename, outFilename);
     			}
     		}
     		
@@ -74,6 +83,17 @@ public class PDFJuice
 	
     }
 
+	public static void slidesToText(String inFilename, String outFilename) {
+		try {
+			PDFSlidesExporter proc = new PDFSlidesExporter(inFilename);
+			//proc.testOnePageBuilder();
+			//proc.allPagesToText();
+			proc.allPagesToText(outFilename);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
 	
 	public static void slidesToHtml(String inFilename, String outFilename) {

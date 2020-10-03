@@ -114,7 +114,7 @@ public class SlideExtractor extends PDFGraphicsStreamEngine
     	return sbuild.build(cluster);
     }
 
-    
+    //Deprecated?
     public Slide makeSlide()
     {
     	Slide s = new Slide();

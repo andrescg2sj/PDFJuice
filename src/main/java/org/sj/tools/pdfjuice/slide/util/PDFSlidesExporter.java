@@ -39,7 +39,7 @@ public class PDFSlidesExporter {
 		
 	}
 	
-	public void allPagesToText() throws IOException {
+	public void allPagesToText(String outFilename) throws IOException {
 		LinkedList<Slide> slides = new LinkedList<Slide>();
 		int countElems = 0;
 		for(int i=0; i<doc.getNumberOfPages();i++) {
@@ -57,7 +57,7 @@ public class PDFSlidesExporter {
 		System.out.println("Elements: "+countElems);
 		doc.close();
 		
-		FileWriter w = new FileWriter(new File("out/out1.txt"));
+		FileWriter w = new FileWriter(new File(outFilename));
 		PrintWriter p = new PrintWriter(w);
 		for(Slide s: slides) {
 			p.print(s.plainText());

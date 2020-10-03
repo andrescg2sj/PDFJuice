@@ -65,7 +65,9 @@ public class PDFTableExporter implements CommonInfo
     
     ExtractionProperties properties = new ExtractionProperties();
     
-    
+    public void setShapeDetection(boolean detect) {
+    	properties.setShapeDetection(detect);
+    }
 	
 	public void setMaxLineThickness(double v) {
 		properties.setMaxLineThickness(v);

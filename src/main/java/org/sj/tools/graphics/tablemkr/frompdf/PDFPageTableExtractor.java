@@ -391,8 +391,28 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
     	
     	
     }
+    
+    public void strokeRectangle(Rectangle2D rect) {
+    	Point2D points[] = pointsFromRectangle(rect);
+    	strokeRectangle(points[0], points[1],points[2], points[3]);
+    }
+    
+    //TODO: Move to Region (PDFJuice)
+    static Point2D[] pointsFromRectangle(Rectangle2D rect) {
+    	double min_x = rect.getMinX();
+    	double min_y = rect.getMinY();
+    	double max_x = rect.getMaxX();
+    	double max_y = rect.getMaxY();
+    	Point2D p[] = new Point2D[4];
+    	p[0] = new Point2D.Double(min_x, min_y);
+    	p[1] = new Point2D.Double(min_x, max_y);
+    	p[2] = new Point2D.Double(max_x, max_y);
+    	p[3] = new Point2D.Double(max_x, min_y);
+    	return p;
+    	
+    }
 
-    public void strokeRectangle(Point2D p0, Point2D p1, Point2D p2, Point2D p3) throws IOException
+    public void strokeRectangle(Point2D p0, Point2D p1, Point2D p2, Point2D p3) 
     {
 
         Rectangle2D r = StringRegion.rectangleFromPoints(p0,p1,p2,p3);
@@ -530,9 +550,9 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
     	int linCnt = 0;
     	for(Shape s : elems) {
     		if(s instanceof Line2D) {
-    			//TODO
+    			Line2D line = (Line2D) s;
+    			lines.add(new TLine(line));
     		} else if(s instanceof Rectangle2D) {
-    			//TODO
     			Rectangle2D rect = (Rectangle2D) s;
     			if(isVerticalStrip(rect,properties.maxLineThickness)) {
     				if(nsclr.toRGB() == 0) {
@@ -550,6 +570,9 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
     				} else {
     					log.finest("Non black horiz. line");
     				}
+    			} else if(properties.enableDetectShapes) {
+					log.info("Stroke: "+ rect.toString());
+    				strokeRectangle(rect);
     			}
     		}
     		
@@ -557,6 +580,7 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
 
         path.clear();
     }
+    
     
     public static boolean isVerticalStrip(Rectangle2D rect, double threshold) {
     	return (rect.getWidth() < threshold);

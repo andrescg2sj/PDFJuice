@@ -20,6 +20,8 @@ public class ExtractionProperties {
      * maximum distance of two objects to be considered in the same region (table).
      */
     double tableThreshold = DEFAULT_PROXIMITY;
+    
+    boolean enableDetectShapes = false;
 
     public ExtractionProperties() {
     	clip = new ClippingArea();
@@ -34,6 +36,10 @@ public class ExtractionProperties {
     	clip = new ClippingArea(clipRect);
     	maxLineThickness = thickness;
     	tableThreshold = proximity;
+    }
+    
+    public void setShapeDetection(boolean detect) {
+    	this.enableDetectShapes = detect;
     }
 
 	public void setMaxLineThickness(double v) {
