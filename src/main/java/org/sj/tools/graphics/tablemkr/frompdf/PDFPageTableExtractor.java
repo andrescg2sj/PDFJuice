@@ -34,14 +34,11 @@ import java.awt.geom.Line2D;
 //import java.util.Iterator;
 
 import org.sj.tools.graphics.sectorizer.GraphicString;
-import org.sj.tools.graphics.sectorizer.HorizBandTransform;
 import org.sj.tools.graphics.sectorizer.NormalComparator;
 import org.sj.tools.graphics.sectorizer.PosRegionCluster;
 import org.sj.tools.graphics.sectorizer.Positionable;
 import org.sj.tools.graphics.sectorizer.ReverseYComparator;
-import org.sj.tools.graphics.sectorizer.CompoundTransform;
 import org.sj.tools.graphics.sectorizer.ContentRegion;
-import org.sj.tools.graphics.sectorizer.ExpandTransform;
 import org.sj.tools.graphics.sectorizer.GStringBuffer;
 
 
@@ -67,6 +64,9 @@ import org.apache.pdfbox.util.Matrix;
 import org.apache.pdfbox.util.Vector;
 import org.sj.tools.pdfjuice.CommonInfo;
 import org.sj.tools.graphics.sectorizer.StringRegion;
+import org.sj.tools.graphics.sectorizer.geom.CompoundTransform;
+import org.sj.tools.graphics.sectorizer.geom.ExpandTransform;
+import org.sj.tools.graphics.sectorizer.geom.HorizBandTransform;
 import org.sj.tools.graphics.tablemkr.GridTableMaker;
 import org.sj.tools.graphics.tablemkr.TLine;
 import org.sj.tools.graphics.tablemkr.Table;
@@ -82,7 +82,7 @@ import java.util.logging.Logger;
  */
 public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements CommonInfo
 {
-	Logger log = Logger.getLogger("PDFTableExtractor");
+	private static Logger log = Logger.getLogger("org.sj.tools.graphics.tablemkr.frompdf.PDFPageTableExtractor");
 	
 	/*
 	 * 
