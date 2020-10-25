@@ -17,12 +17,12 @@ public class PDFJuice
     static String DEFAULT_PATH = "res/CEPI-1-1.pdf";
     //static String DEFAULT_PATH = "res/test-1cell.pdf";
     
-	static {
+	/*static {
 	      System.setProperty("java.util.logging.config.file",
 	              "./logging.properties");
 	      //must initialize loggers after setting above property
 	      //LOGGER = Logger.getLogger(MyClass.class.getName());
-	  }
+	  }*/
 
 
 	
@@ -67,6 +67,8 @@ public class PDFJuice
     	    		//proc.setShapeDetection(true);
     	    		proc.setDestination(outFilename);
     	    		proc.run(inFilename);
+    			} else if("poster".equals(sMode)) {
+    				posterToHtml(inFilename, outFilename);
     			} else if("text".equals(sMode)) {
     				slidesToText(inFilename, outFilename);
     			}
@@ -82,6 +84,19 @@ public class PDFJuice
         }
 	
     }
+    
+	public static void posterToHtml(String inFilename, String outFilename) {
+		try {
+			PDFSlidesExporter proc = new PDFSlidesExporter(inFilename);
+			//proc.testOnePageBuilder();
+			//proc.allPagesToText();
+			proc.firstPageToHtml(outFilename);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+
 
 	public static void slidesToText(String inFilename, String outFilename) {
 		try {
