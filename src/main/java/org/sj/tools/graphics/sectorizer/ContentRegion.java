@@ -9,6 +9,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import org.sj.tools.graphics.sectorizer.geom.ExpandTransform;
+import org.sj.tools.graphics.sectorizer.geom.MultiplyTransform;
+
 public class ContentRegion<E extends Positionable> implements Positionable {
 
 	Rectangle2D region;

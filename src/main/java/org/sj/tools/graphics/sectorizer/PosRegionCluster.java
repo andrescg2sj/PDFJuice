@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Vector;
 
+import org.sj.tools.graphics.sectorizer.geom.ExpandTransform;
+import org.sj.tools.graphics.sectorizer.geom.RectTransformation;
+
 
 
 public class PosRegionCluster<E extends Positionable>  {
@@ -327,6 +330,10 @@ public class PosRegionCluster<E extends Positionable>  {
 		}
 		remaining.clear();
 		regions.addAll(newRegions);
+	}
+	
+	public void remainingToRegions() {
+		remainingToRegions(null);
 	}
 	
 	public void remainingToRegions(RectTransformation transf)

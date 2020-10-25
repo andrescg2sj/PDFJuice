@@ -63,6 +63,10 @@ public class StrRegionCluster extends PosRegionCluster<GraphicString> implements
 			this.pushRegion(sr);
 		}
 	}
+	
+	public StringRegion getStrRegion(int i) {
+		return new StringRegion(getRegion(i));
+	}
 
 	
 	public ContentRegion<GraphicString> find(String text) {
