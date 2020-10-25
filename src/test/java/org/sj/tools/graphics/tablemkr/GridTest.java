@@ -25,33 +25,33 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.sj.tools.graphics.tablemkr.Cell;
-import org.sj.tools.graphics.tablemkr.Grid;
+import org.sj.tools.graphics.tablemkr.GridBorders;
 
 
 public class GridTest {
 	
 	@Test
 	public void testingNumCols() {
-		Grid g1 = new Grid(1,4);
+		GridBorders g1 = new GridBorders(1,4);
 		assertEquals("g1 ", 1, g1.numCols());
 		
-		Grid g2 = new Grid(2, 3);
+		GridBorders g2 = new GridBorders(2, 3);
 		assertEquals("g2 ", 2, g2.numCols());
 
-		Grid g3 = new Grid(5, 3);
+		GridBorders g3 = new GridBorders(5, 3);
 		assertEquals("g3 ", 5, g3.numCols());
 	}
 
 
 	@Test
 	public void testingNumRow() {
-		Grid g1 = new Grid(1,4);
+		GridBorders g1 = new GridBorders(1,4);
 		assertEquals("g1 ", 4, g1.numRows());
 		
-		Grid g2 = new Grid(2, 3);
+		GridBorders g2 = new GridBorders(2, 3);
 		assertEquals("g2 ", 3, g2.numRows());
 
-		Grid g3 = new Grid(5, 2);
+		GridBorders g3 = new GridBorders(5, 2);
 		assertEquals("g3 ", 2, g3.numRows());
 	}
 
@@ -59,7 +59,7 @@ public class GridTest {
 	public void testingGetMaxCell()
 	{
 		//CellLimits lim[][] = createMatrix(2,2);
-		Grid grid = new Grid(2,2);
+		GridBorders grid = new GridBorders(2,2);
 		//GridTableMaker
 		
 		Cell a = grid.getMaxCell(0, 0);
@@ -82,7 +82,7 @@ public class GridTest {
 		assertEquals("V divided grid. rowSpan",2, c.rowSpan);
 		
 		
-		Grid g = new Grid(2,2);
+		GridBorders g = new GridBorders(2,2);
 		g.setAll();
 		
 		Cell d = g.getMaxCell(0, 0);
@@ -102,7 +102,7 @@ public class GridTest {
 		assertEquals("table 3. colSpan", 1,f.colSpan);
 		assertEquals("table 3. rowSpan", 2,f.rowSpan);
 		
-		Grid h = new Grid(2,7);
+		GridBorders h = new GridBorders(2,7);
 		h.setAll();
 		h.setBottom(1, 2,false);
 		h.setBottom(1, 3,false);
