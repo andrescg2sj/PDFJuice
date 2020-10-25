@@ -28,14 +28,14 @@ import org.sj.tools.graphics.sectorizer.ReverseYComparator;
 //TODO: decide a consistent order for column and row parameters
 public class GridTableMaker extends TableMaker {
 	
-	Grid grid;
+	GridBorders grid;
 
 	public GridTableMaker()
 	{
 		
 	}
 	
-	public GridTableMaker(Grid g)
+	public GridTableMaker(GridBorders g)
 	{
 		grid = g;
 	}
@@ -58,7 +58,7 @@ public class GridTableMaker extends TableMaker {
 		}
 	}
 	
-	public static Table fromGrid(Grid g) {
+	public static Table fromGrid(GridBorders g) {
 		//System.out.println(" --- ");
 		//g.log();
 		
@@ -157,7 +157,7 @@ public class GridTableMaker extends TableMaker {
 			return null;
 		}
 		
-		grid = new Grid(frame.numCols(), frame.numRows());
+		grid = new GridBorders(frame.numCols(), frame.numRows());
 		
 		// volver a recorrer. Rellenar CellBorders
 		for(TLine l: lines) {

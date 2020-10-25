@@ -26,7 +26,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
 import org.sj.tools.graphics.sectorizer.ContentRegion;
-import org.sj.tools.graphics.sectorizer.ExpandTransform;
+import org.sj.tools.graphics.sectorizer.geom.ExpandTransform;
 
 
 public  class RectArea extends Area

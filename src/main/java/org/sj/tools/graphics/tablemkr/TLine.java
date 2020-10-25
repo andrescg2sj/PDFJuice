@@ -26,8 +26,8 @@ import java.awt.geom.Rectangle2D;
 import java.util.Locale;
 import java.awt.geom.Line2D;
 
-import org.sj.tools.graphics.sectorizer.ExpandTransform;
 import org.sj.tools.graphics.sectorizer.Positionable;
+import org.sj.tools.graphics.sectorizer.geom.ExpandTransform;
 
 //TODO: extend Line2D
 public class TLine implements Positionable

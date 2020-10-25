@@ -20,7 +20,7 @@
 
 package org.sj.tools.graphics.tablemkr;
 
-public class Grid {
+public class GridBorders {
 	
 	CellLimits grid[][];
 	
@@ -63,8 +63,9 @@ public class Grid {
 		return grid.length;
 	}
 	
+	
 	//FIXME: use consistent cols/rows order.
-	public Grid(int cols, int rows) {
+	public GridBorders(int cols, int rows) {
 		grid = createMatrix(cols, rows);
 	}
 
@@ -108,6 +109,21 @@ public class Grid {
 
 	public boolean getBottom(int col, int row) {
 		return grid[col][row].bottom;
+	}
+	
+	public void setBetween(int startCol, int startRow, int endCol, int endRow, boolean value) {
+		for(int col=startCol+1; col<endCol; col++) {
+			setLeft(col, startRow, value);
+		}
+
+		for(int row=startRow+1; row<endRow; row++) {
+			setLeft(startCol, row, value);
+			
+			for(int col=startCol+1; col<endCol; col++) {
+				setLeft(col, row, value);
+				setTop(col, row, value);
+			}
+		}
 	}
 
 	/*

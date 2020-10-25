@@ -46,6 +46,15 @@ public class CellLocation {
 		return String.format("cell(%d,%d,{%s})", col, row, cell.toString());
 	}
 	
+	public int getColSpan() {
+		return cell.getColSpan();
+	}
+	
+	public int getRowSpan() {
+		return cell.getRowSpan();
+	}
+
+	
 	public int getRow() {
 		return row;
 	}

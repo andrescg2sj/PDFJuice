@@ -28,6 +28,7 @@ import java.util.Vector;
 
 import org.sj.tools.graphics.sectorizer.ContentRegion;
 import org.sj.tools.graphics.sectorizer.GraphicString;
+import org.sj.tools.graphics.sectorizer.geom.NumberVector;
 import org.sj.tools.graphics.tablemkr.graphtrace.SvgTrace;
 
 import java.util.logging.Logger;
@@ -35,7 +36,7 @@ import java.util.logging.Level;
 
 public abstract class TableMaker
 {
-	Logger log = Logger.getLogger("TableMaker");
+	private static Logger log = Logger.getLogger("org.sj.tools.graphics.tablemkr.TableMaker");
 	
     float collisionThreshold = 2;
     
@@ -56,6 +57,23 @@ public abstract class TableMaker
     public abstract Table makeTable();
     
     Frame buildFrame() {
+    	NumberVector x = new NumberVector();
+    	NumberVector y = new NumberVector();
+    	for(TLine l: lines) {
+    		if(l.isHoriz()) {
+    			log.fine(l.toString() + " is horziontal.");
+    			y.insert(l.getA().getY());
+    			
+    		} else {
+    			log.fine(l.toString() + " is vertical.");
+    			x.insert(l.getA().getX());
+    		}
+    	}
+    	return new Frame(x, y);
+    }
+    
+    @Deprecated
+    Frame _old_buildFrame() {
     	/* convenience array that stores all marks */
     	int i=0;
     	int j = lines.size()-1;
