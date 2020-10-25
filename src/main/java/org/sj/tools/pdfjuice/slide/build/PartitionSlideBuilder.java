@@ -6,11 +6,11 @@ import java.io.IOException;
 
 import org.sj.tools.graphics.sectorizer.ContentRegion;
 import org.sj.tools.graphics.sectorizer.GraphicString;
-import org.sj.tools.graphics.sectorizer.HorizBandTransform;
-import org.sj.tools.graphics.sectorizer.MultiplyTransform;
 import org.sj.tools.graphics.sectorizer.StrRegionCluster;
 import org.sj.tools.graphics.sectorizer.StringRegion;
-import org.sj.tools.graphics.sectorizer.VertBandTransform;
+import org.sj.tools.graphics.sectorizer.geom.HorizBandTransform;
+import org.sj.tools.graphics.sectorizer.geom.MultiplyTransform;
+import org.sj.tools.graphics.sectorizer.geom.VertBandTransform;
 import org.sj.tools.pdfjuice.slide.SldGroup;
 import org.sj.tools.pdfjuice.slide.SldList;
 import org.sj.tools.pdfjuice.slide.SldObject;
