@@ -1,3 +1,21 @@
+/*
+ * Apache License
+ *
+ * Copyright (c) 2020 andrescg2sj
+ *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *    https://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.sj.tools.pdfjuice.slide.util;
 
 import java.io.File;
@@ -6,6 +24,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.LinkedList;
+import java.util.logging.Logger;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -13,10 +32,14 @@ import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.sj.tools.pdfjuice.slide.Slide;
 import org.sj.tools.pdfjuice.slide.build.BasicSlideBuilder;
 import org.sj.tools.pdfjuice.slide.build.PartitionSlideBuilder;
+import org.sj.tools.pdfjuice.slide.build.PosterSlideBuilder;
 import org.sj.tools.pdfjuice.slide.build.SlideBuilder;
 import org.sj.tools.pdfjuice.slide.html.HtmlSlide;
 
 public class PDFSlidesExporter {
+	
+	private static Logger log = Logger.getLogger("org.sj.tools.pdfjuice.slide.util.PDFSlidesExporter");
+	
 	
 	File file;
 	PDDocument doc;
@@ -37,6 +60,27 @@ public class PDFSlidesExporter {
 	        
 		}
 		
+	}
+	
+	public void firstPageToHtml(String outFilename) throws IOException {
+		LinkedList<Slide> slides = new LinkedList<Slide>();
+		int countElems = 0;
+		PDPage page = doc.getPage(0);
+		SlideExtractor engine = new SlideExtractor(page);
+		// 108,0,720,583
+		engine.run();
+		Slide s = engine.makeSlide(new PosterSlideBuilder());
+		countElems += s.countElems();
+		slides.add(s);
+		log.info("Elements: "+countElems);
+		doc.close();
+		
+		FileWriter w = new FileWriter(new File(outFilename));
+		PrintWriter p = new PrintWriter(w);
+		p.print(s.toHTML());
+		p.close();
+		
+
 	}
 	
 	public void allPagesToText(String outFilename) throws IOException {
