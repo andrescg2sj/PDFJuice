@@ -1,27 +1,38 @@
-package org.sj.tools.graphics.sectorizer;
+package org.sj.tools.graphics.sectorizer.geom;
 
 import java.awt.geom.Rectangle2D;
 
 public class MultiplyTransform implements RectTransformation {
 	
-	double factor;
+	double x_factor, y_factor;
 	
 	public MultiplyTransform(double f) {
-		factor = f;
+		x_factor = y_factor = f;
 	}
+	
+	public MultiplyTransform(double fx, double fy) {
+		x_factor = fx;
+		y_factor = fy;
+	}
+
 
 	@Override
 	public Rectangle2D transform(Rectangle2D r) {
-		return multiplyRect(r, factor);
+		return multiplyRect(r, x_factor, y_factor);
+	}
+	
+	public static Rectangle2D multiplyRect(Rectangle2D rect, double factor) {
+		return multiplyRect(rect, factor,factor);
 	}
 
-	public static Rectangle2D multiplyRect(Rectangle2D rect, double factor) {
-		double width = rect.getWidth() * factor;
-		double height = rect.getHeight() * factor;
-		return new Rectangle2D.Double(rect.getX() - width*(2*(factor-1))/2,
-				rect.getY() - height*(2*(factor-1))/2,
-				width,
-				height);
+
+	public static Rectangle2D multiplyRect(Rectangle2D rect, double fx, double  fy) {
+		double width = rect.getWidth();
+		double height = rect.getHeight();
+		return new Rectangle2D.Double(rect.getX() + width*(1-fx)/2,
+				rect.getY() + height*(1-fy)/2,
+				width*fx,
+				height*fy);
 		
 	}
 

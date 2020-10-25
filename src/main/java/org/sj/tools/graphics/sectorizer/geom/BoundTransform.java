@@ -1,4 +1,4 @@
-package org.sj.tools.graphics.sectorizer;
+package org.sj.tools.graphics.sectorizer.geom;
 
 import java.awt.geom.Rectangle2D;
 
