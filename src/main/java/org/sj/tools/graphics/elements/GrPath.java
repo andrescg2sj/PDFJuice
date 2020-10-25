@@ -30,6 +30,8 @@ import java.awt.Shape;
 import java.util.Vector;
 //import java.util.Iterator;
 
+import org.sj.tools.graphics.sectorizer.StringRegion;
+
 public class GrPath {
 
 
@@ -64,9 +66,12 @@ public class GrPath {
     //TODO: May the points describe a rotated rectangle?
     public void appendRectangle(Point2D p0, Point2D p1, Point2D p2, Point2D p3) {
     	//TODO: log/Warning/exception if the rectangle is rotated
+    	/*
     	Rectangle2D rect = new Rectangle2D.Double(p0.getX(),p0.getY(),p1.getX()-p0.getX(),p1.getY()-p0.getY());
     	rect.add(p2);
     	rect.add(p3);
+    	elements.add(rect);*/
+    	Rectangle2D rect = StringRegion.rectangleFromPoints(p0, p1, p2, p3);
     	elements.add(rect);
     }
 
