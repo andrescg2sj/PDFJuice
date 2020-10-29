@@ -46,7 +46,7 @@ import org.sj.tools.pdfjuice.slide.Slide;
 
 public class PosterSlideBuilder extends BasicSlideBuilder {
 	
-	Logger log = Logger.getLogger(this.getClass().getCanonicalName());
+	private static Logger log = Logger.getLogger("org.sj.tools.pdfjuice.slide.build.PosterSlideBuilder");
 
 	public PosterSlideBuilder() throws IOException {
 		super();
@@ -82,7 +82,8 @@ public class PosterSlideBuilder extends BasicSlideBuilder {
 
 		cluster.sortReverseYRegions();
 		
-		Slide s = buildElements(cluster);
+		//Slide s = buildElements(cluster);
+		Slide s = buildAsTable(cluster);
 		
 		return s;
 	}
@@ -148,11 +149,15 @@ public class PosterSlideBuilder extends BasicSlideBuilder {
 	
 
 	public static NumberVector getVertVoids(List<Rectangle2D> rects) {
+	    log.finest("accumulate");
 		List<Rectangle2D> xAccumRects = RectAccumulator.accumulateX(rects);
+		log.finest("setup");
 		NumberVector heights = getHeights(xAccumRects);
 		NumberVector x_voids = new NumberVector();
-		int min_i[] = getMinIndexes(heights); 
+		int min_i[] = getMinIndexes(heights);
+		log.finest("for");
 		for(int k=0; k<min_i.length; k++) {
+		    log.finest("k="+k);
 			x_voids.insert(xAccumRects.get(min_i[k]).getCenterY());
 		}
 		return x_voids;
@@ -193,7 +198,8 @@ public class PosterSlideBuilder extends BasicSlideBuilder {
 		
 		NumberVector xGuides = getClusterVertVoids(contentCl); 
 		NumberVector yGuides = getClusterHorizVoids(contentCl); 
-		
+		log.fine("xGuides: "+xGuides);
+		log.fine("yGuides: "+yGuides);
 		
 		Frame frame = new Frame(xGuides, yGuides);
 		int numCols = xGuides.size()-1;
