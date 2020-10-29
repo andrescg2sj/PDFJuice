@@ -33,8 +33,7 @@ public class SldTable implements SldObject {
 
 	@Override
 	public String toHTML() {
-		//TODO
-		return "<table>TODO</table>";
+		return table.toHTML();
 	}
 
 }
