@@ -146,8 +146,11 @@ public class PosterSlideBuilder extends BasicSlideBuilder {
 		return java.util.Arrays.copyOf(indexes, count);
 	}
 
-	
-
+    /**
+     * Get vertical axes that divide the cluster.
+     *
+     * @returns NumberVector with the x coordinates of the vertical axes.
+     */
 	public static NumberVector getVertVoids(List<Rectangle2D> rects) {
 	    log.finest("accumulate");
 		List<Rectangle2D> xAccumRects = RectAccumulator.accumulateX(rects);
