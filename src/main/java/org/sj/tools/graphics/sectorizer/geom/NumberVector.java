@@ -76,7 +76,17 @@ public class NumberVector  {
 			numbers.insertElementAt(new Double(value), max_i);
 		}
 	}
+
+    public String toString() {
+	Vector<String> text= new Vector<String>();
+	for(Double d: numbers) {
+	    text.add(String.format("%f", d.doubleValue()));
+ 
+	}
 	
+	return "(" + String.join(", ",text)+")";
+
+    }
 
 
 }
