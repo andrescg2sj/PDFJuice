@@ -107,6 +107,9 @@ public class RectAccumulator {
 	}
 	
 
+    /**
+     * Divide by 'x' coordinate, accumulate heights.
+     */
 	
 	public static List<Rectangle2D> accumulateX(List<Rectangle2D> list) {
 		List<Rectangle2D> result = new LinkedList<Rectangle2D>();
