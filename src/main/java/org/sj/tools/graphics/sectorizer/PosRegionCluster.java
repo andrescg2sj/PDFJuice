@@ -355,7 +355,8 @@ public class PosRegionCluster<E extends Positionable>  {
 		regions.addAll(newRegions);
 	}
 
-	
+
+	@Deprecated
 	public void partitionContent(double threshold)
 	{
 		partitionContent(threshold, false);

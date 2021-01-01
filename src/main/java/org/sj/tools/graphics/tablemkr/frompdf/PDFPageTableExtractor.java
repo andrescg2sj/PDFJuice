@@ -116,7 +116,7 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
 	//TableMaker tmaker = new SplitTableMaker();
     //TableMaker tmaker = new GridTableMaker();
 
-    public List<Table> getTables()
+    public List<Table> getStoredTables()
     {
     	return generatedTables;
     }
@@ -171,15 +171,32 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
     	return reversed;
     }
     
+    
+
     public List<Table> createTables() {
     	List<TableMaker> makers = createTableMakers();
     	LinkedList<Table> tables = new LinkedList<Table>();
     	for(TableMaker tm: makers) {
     		Table t = tm.makeTable();
     		if(t != null) {
+    			tables.add(t);
+    		}
+    	}
+    	log.finest("Tables created: "+tables.size());
+    	return reverse(tables);
+    }
+    
+    public List<Table> _old_createTables(boolean clean) {
+    	List<TableMaker> makers = createTableMakers();
+    	LinkedList<Table> tables = new LinkedList<Table>();
+    	for(TableMaker tm: makers) {
+    		Table t = tm.makeTable();
+	    	log.info("Table created: " + String.format("cols=%d, rows=%d", t.getCols(),t.getRows()));
+    		if(t != null) {
         		t = t.trim();
         		if(t.countEmptyRows() > 0) {
         			java.util.Vector<Table> parts = t.divideOnEmptyRow();
+        	    	log.info("Parts: " + parts.size());
         			for(Table p: parts) {
         				//TODO
         		    	log.info("Simplify: ");
@@ -238,7 +255,6 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
     				tmaker.add(gs);
     			}
     		}
-    		
     		makers.add(tmaker);
     	}
 
@@ -248,6 +264,26 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
 
     }
     
+    public List<Table> getTables(boolean clean) {
+    	if(clean)
+    		return getCleanTables();
+    	return getBruteTables();
+    }
+    
+    
+    public List<Table> getBruteTables() {
+    	List<Table> all = createTables();
+    	List<Table> tables = new LinkedList<Table>();
+    	
+    	for(Table t: all) {
+    		if(t != null && !t.isEmpty() ) {
+    			tables.add(t);
+    		}
+    	}
+    	return tables;
+    }
+
+    
     public List<Table> getCleanTables() {
     	List<Table> tables = createTables();
     	List<Table> cleanTables = new LinkedList<Table>();
@@ -255,7 +291,19 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
     	for(Table t: tables) {
     		Table clean = t.trim();
     		if(clean != null && !clean.isEmpty() ) {
-    			cleanTables.add(clean);
+        		if(clean.countEmptyRows() > 0) {
+        			java.util.Vector<Table> parts = clean.divideOnEmptyRow();
+        	    	log.info("Parts: " + parts.size());
+        			for(Table p: parts) {
+        				//TODO
+        		    	log.info("Simplify: ");
+        		    	log.info(p.toHTML());
+        				p.simplifyTable();
+        				cleanTables.add(p);
+        			}
+        		} else {
+        			cleanTables.add(clean);
+        		}
     		}
     	}
     	return cleanTables;

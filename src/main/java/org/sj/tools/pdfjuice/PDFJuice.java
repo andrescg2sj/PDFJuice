@@ -44,7 +44,20 @@ public class PDFJuice
         Option optMode = new Option("m", "mode", true, "extraction mode: slide|table|text");
         optMode.setRequired(true);
         options.addOption(optMode);
+        
+        Option clip = new Option("c", "clip", true, "format: x,y,width,height");
+        clip.setRequired(false);
+        options.addOption(clip);
 
+        Option optThickness = new Option("t", "thickness", true, "máximum line thickness");
+        optThickness.setRequired(false);
+        options.addOption(optThickness);
+
+        Option optProximity = new Option("p", "proximity", true, "minimum distance between tables");
+        optProximity.setRequired(false);
+        options.addOption(optProximity);
+
+        
 
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
@@ -63,7 +76,8 @@ public class PDFJuice
     			if("slide".equals(sMode)) {
     				slidesToHtml(inFilename, outFilename);
     			} else if("table".equals(sMode)) {
-    	    		PDFTableExporter proc = PDFTableExporter.parseOptions(remaining);
+    	    		//PDFTableExporter proc = PDFTableExporter.parseOptions(remaining);
+    				PDFTableExporter proc = PDFTableExporter.make(cmd);
     	    		//proc.setShapeDetection(true);
     	    		proc.setDestination(outFilename);
     	    		proc.run(inFilename);

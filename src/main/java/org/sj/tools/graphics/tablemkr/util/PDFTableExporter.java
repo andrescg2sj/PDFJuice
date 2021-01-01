@@ -93,37 +93,8 @@ public class PDFTableExporter implements CommonInfo
     }
 
 
-	
-	public static PDFTableExporter parseOptions(String args[]) throws ParseException {
 
-		Options options = new Options();
-
-		/*
-        Option output = new Option("o", "output", true, "output file");
-        output.setRequired(false);
-        options.addOption(output);
-        */
-
-        Option clip = new Option("c", "clip", true, "format: x,y,width,height");
-        clip.setRequired(false);
-        options.addOption(clip);
-
-        Option optThickness = new Option("t", "thickness", true, "máximum line thickness");
-        optThickness.setRequired(false);
-        options.addOption(optThickness);
-
-        Option optProximity = new Option("p", "proximity", true, "minimum distance between tables");
-        optProximity.setRequired(false);
-        options.addOption(optProximity);
-
-        CommandLineParser parser = new DefaultParser();
-        //HelpFormatter formatter = new HelpFormatter();
-        CommandLine cmd;
-
-    	cmd = parser.parse(options, args);
-        //String remaining[] = cmd.getArgs();
-
-		
+	public static PDFTableExporter make(CommandLine cmd) throws ParseException {
 		PDFTableExporter proc = new PDFTableExporter(); 
 		
 		if(cmd.hasOption("t")) {
@@ -140,10 +111,45 @@ public class PDFTableExporter implements CommonInfo
 	    } else {
 	    	System.out.println("NO CLIP");
 	    }
-
 		
 		return proc;
 
+	}
+
+    @Deprecated
+	public static PDFTableExporter parseOptions(String args[]) throws ParseException {
+
+		Options options = new Options();
+
+		/*
+        Option output = new Option("o", "output", true, "output file");
+        output.setRequired(false);
+        options.addOption(output);
+        */
+
+
+        CommandLineParser parser = new DefaultParser();
+        //HelpFormatter formatter = new HelpFormatter();
+        CommandLine cmd;
+        
+        Option clip = new Option("c", "clip", true, "format: x,y,width,height");
+        clip.setRequired(false);
+        options.addOption(clip);
+
+        Option optThickness = new Option("t", "thickness", true, "máximum line thickness");
+        optThickness.setRequired(false);
+        options.addOption(optThickness);
+
+        Option optProximity = new Option("p", "proximity", true, "minimum distance between tables");
+        optProximity.setRequired(false);
+        options.addOption(optProximity);
+
+
+    	cmd = parser.parse(options, args);
+        //String remaining[] = cmd.getArgs();
+
+		
+    	return make(cmd);
 	}
 	
 	public void setClip(Rectangle r) {

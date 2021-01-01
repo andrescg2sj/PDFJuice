@@ -35,7 +35,7 @@ public class PDFTableExtractor {
 	
 	
 	
-	void generateTables() throws IOException {
+	void generateTables(boolean clean) throws IOException {
 	    PDDocument doc = PDDocument.load(file);
 	    for(int i=0; i< doc.getNumberOfPages(); i++) {
 	    	PDPage page = doc.getPage(i);
@@ -43,7 +43,8 @@ public class PDFTableExtractor {
 	    			new PDFPageTableExtractor(page, properties); 
 	    		//TODO: specify extraction properties. 
 	    	engine.run();
-	    	List<Table> pageTables = engine.getCleanTables();
+	    	
+	    	List<Table> pageTables = engine.getTables(clean);
 	    	//engine.getTables();
 	    	tables.addAll(pageTables);
 	    }
@@ -57,12 +58,16 @@ public class PDFTableExtractor {
 		throw new UnsupportedOperationException("Not implemented");
 	}
 	
-
 	public List<Table> getAllTables() throws IOException  {
+		return getAllTables(true);
+	}
+
+	
+	public List<Table> getAllTables(boolean clean) throws IOException  {
     	//File inFile = new File(srcPath);
 		if(tables == null) {
 			tables = new LinkedList<Table>();
-			generateTables();
+			generateTables(clean);
 		} 
 		return tables;
 	}

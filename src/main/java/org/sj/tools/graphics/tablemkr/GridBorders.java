@@ -20,6 +20,8 @@
 
 package org.sj.tools.graphics.tablemkr;
 
+import org.sj.tools.pdfjuice.CommonInfo;
+
 public class GridBorders {
 	
 	CellLimits grid[][];
@@ -44,15 +46,21 @@ public class GridBorders {
 		
 	}
 	
-	public void log()
-	{
+	public String logStr() {
+		StringBuilder sbldr = new StringBuilder();
 		for(int r=0;r<numRows();r++) {
 			for(int c=0; c<numCols();c++) {
-				System.out.print(grid[c][r]);
+				sbldr.append(grid[c][r]);
 			}
-			System.out.println();
+			sbldr.append(CommonInfo.NEW_LINE);
 			
 		}
+		return sbldr.toString();
+	}
+	
+	public void log()
+	{
+		System.out.println(logStr());
 	}
 	
 	public int numRows() {

@@ -22,12 +22,14 @@ package org.sj.tools.graphics.tablemkr;
 
 import java.util.Collections;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import org.sj.tools.pdfjuice.CommonInfo;
 import org.sj.tools.graphics.sectorizer.GraphicString;
 
 public class Table implements CommonInfo {
 
+	private static Logger log = Logger.getLogger("org.sj.tools.graphics.tablemkr.Table");
 	//Vector<Area> areas;
 	Cell cells[][];
 	
@@ -93,12 +95,25 @@ public class Table implements CommonInfo {
 		return cells[col][row];
 	}
 	
-	public Vector<String> getContents(int col, int row) {
+	public CellLocation getVisibleCellLoc(int col, int row) {
 		if(cells[col][row] instanceof HiddenCell) {
 			HiddenCell hc = (HiddenCell) cells[col][row];
-			return hc.hiddenBy.cell.contents;
+			return hc.hiddenBy;
 		} 
-		return cells[col][row].contents; 
+		return new CellLocation(col, row, cells[col][row]);
+	}
+	
+	public Cell getVisibleCell(int col, int row) {
+		if(cells[col][row] instanceof HiddenCell) {
+			HiddenCell hc = (HiddenCell) cells[col][row];
+			return hc.hiddenBy.cell;
+		} 
+		return cells[col][row];
+	}
+
+	
+	public Vector<String> getContents(int col, int row) {
+		return getVisibleCell(col,row).contents;
 	}
 	
 	//TODO: Test
@@ -193,10 +208,15 @@ public class Table implements CommonInfo {
 		int min = getCols();
 		for(int row =0; row < getRows(); row++) {
 			Cell c = cells[col][row];
-			if(c != null) {
+			if(c == null) {
+				return 1;
+			} else {
 				if(c instanceof HiddenCell) {
 					HiddenCell hc = (HiddenCell) c;
 					min =  Math.min(hc.hiddenBy.cell.colSpan + hc.hiddenBy.col - col, min);
+					if(min == 1) {
+						return 1;
+					}
 				} else if(c.colSpan < min) {
 					min = c.colSpan;
 				}
@@ -210,10 +230,15 @@ public class Table implements CommonInfo {
 		int min = getRows();
 		for(int col =0; col < getCols(); col++) {
 			Cell c = cells[col][row];
-			if(c != null) {
+			if(c == null) {
+				return 1;
+			} else {
 				if(c instanceof HiddenCell) {
 					HiddenCell hc = (HiddenCell) c;
 					min =  Math.min(hc.hiddenBy.cell.rowSpan + hc.hiddenBy.row - row, min);
+					if(min == 1) {
+						return 1;
+					}
 				} else if(c.rowSpan < min) {
 					min = c.rowSpan;
 				}
@@ -232,7 +257,7 @@ public class Table implements CommonInfo {
 	
 	/**
 	 * 
-	 * @param col
+	 * @param col index of the column which is going to be simplified.
 	 * @return number of deleted columns.
 	 */
 	private int simplifyCol(int col) {
@@ -241,12 +266,18 @@ public class Table implements CommonInfo {
 		if(minColSpan > 1) {
 			int decrement = minColSpan - 1;
 			for(int row =0; row < getRows(); row++) {
-				Cell c = cells[col][row];
-				if(c == null) {
-					throw new NullPointerException("at row: "+ row);
-				}
-				if(!(c instanceof HiddenCell)) {
-					c.colSpan -= decrement;
+				Cell cell = cells[col][row];
+				if(cell == null) {
+					//throw new NullPointerException("at row: "+ row);
+					log.warning("Null row:"+row);
+				} else if(!(cell instanceof HiddenCell)) {
+					/* get hidden contents in this cell */
+					for(int c=col+1; c<(col+minColSpan);c++) {
+						if(cells[c][row] != null) {
+							cells[col][row].contents.addAll(cells[c][row].contents);
+						}
+					}
+					cell.colSpan -= decrement;
 				} 
 			}
 			return decrement;
@@ -269,9 +300,10 @@ public class Table implements CommonInfo {
 			for(int col =0; col < getCols(); col++) {
 				Cell c = cells[col][row];
 				if(c == null) {
-					throw new NullPointerException("at col:" +c);
-				}
-				if(!(c instanceof HiddenCell)) {
+					//throw new NullPointerException("at col:" +c);
+					log.warning("Null col:"+col);
+					
+				} else if(!(c instanceof HiddenCell)) {
 					c.rowSpan -= decrement;
 				}
 			}
@@ -406,18 +438,18 @@ public class Table implements CommonInfo {
 	 */
 	public void simplifyTable() {
 		int col = 0;
-		//System.out.println("Simplify:");
-		//System.out.println(this.toHTML());
+		log.finest("simplify Table");
+
 		int deletedCols = 0;
 		int numCols = getCols();
 		//System.out.println("numCols:" + numCols);
 		while(col < (numCols-deletedCols)) {
 			try {
-			int cols = simplifyCol(col);
-			//System.out.println("  delete cols:"+cols);
-			deletedCols+=cols;
-			//System.out.println("  sum="+deletedCols);
-			moveDataBack(col+cols+1,0, cols,0);
+				System.out.println("simplify col:" + col);
+				int cols = simplifyCol(col);
+				deletedCols+=cols;
+				System.out.println("move data:" + cols);
+				moveDataBack(col+cols+1,0, cols,0);
 			} catch(NullPointerException ne) {
 				System.out.println(String.format("Malformed table(col=%d): %s",col,ne));
 			}
@@ -437,7 +469,7 @@ public class Table implements CommonInfo {
 
 				moveDataBack(0,row+rows+1, 0, rows);
 			} catch(NullPointerException ne) {
-				System.out.println(String.format("Malformed table(row=%d): %s",row,ne));
+				System.out.println(String.format("Malformed table(row =%d): %s",row,ne));
 			}
 			row++;
 		}

@@ -22,11 +22,15 @@
 package org.sj.tools.graphics.tablemkr;
 
 import java.util.Vector;
+import java.util.logging.Logger;
 
+import org.sj.tools.graphics.sectorizer.GraphicString;
 import org.sj.tools.graphics.sectorizer.ReverseYComparator;
 
 //TODO: decide a consistent order for column and row parameters
 public class GridTableMaker extends TableMaker {
+	
+	private static Logger log = Logger.getLogger("org.sj.tools.graphics.tablemkr.GridTableMaker");
 	
 	GridBorders grid;
 
@@ -112,6 +116,7 @@ public class GridTableMaker extends TableMaker {
     	
     	Vector<Area> areas = buildAreas(table.cells);
     	//System.out.println()
+   		log.fine("areas:" + areas.size());
     	addStringsToAreas(areas);
 
     	// debug
@@ -120,17 +125,28 @@ public class GridTableMaker extends TableMaker {
     	//FIXME: encapsulate? superclass method?
        	for(Area a: areas) {
 			//System.out.println("Build location: " + a.toString());
+       		log.finer("area:");
+       		for(GraphicString gs: a.content) {
+       			log.finer("  gs:" + gs.getText());
+       		}
+       			
 			a.sort(ReverseYComparator.getInstance());
     		CellLocation clo = frame.areaToCellLoc(a, this.collisionThreshold);
     		if(clo == null)
     			throw new NullPointerException("Frame created a null CellLocation");
     		try {
 				//System.out.println("Testing: c:" + clo.col+", r:"+clo.row);
-    			if(table.get(clo.col,clo.row) != null) {
-    				table.cells[clo.col][clo.row].contents = clo.cell.contents;
+    			CellLocation mainLoc = table.getVisibleCellLoc(clo.col, clo.row);
+    			
+    			if(mainLoc.cell != null) {
+    				//table.cells[clo.col][clo.row].contents = clo.cell.contents;
+    				//cell.contents.addAll(cell.contents);
+    				mainLoc.cell.contents.addAll(clo.cell.contents);
+    				log.finer(String.format("put: col=%d,row%d, '%s'",clo.col, clo.row, table.get(clo.col, clo.row).fullText()));
+    				log.finer(String.format("  loc: col=%d,row%d",mainLoc.col, mainLoc.row));
     			} else {
     				// TODO
-    				System.err.println("Warning! Trying to fill empty cell.");
+    				log.warning(String.format("Trying to fill empty cell: col=%d,row%d",clo.col, clo.row));
     			}
     		} catch(Exception ie) {
     			ie.printStackTrace();
@@ -138,7 +154,7 @@ public class GridTableMaker extends TableMaker {
     	}
     	
 
-
+       	
     	
 		return new Table(table);
 	}
@@ -148,7 +164,7 @@ public class GridTableMaker extends TableMaker {
 	}*/
 	
 	public Table makeTable() {
-		
+		log.fine("lines:" + lines.size());
 		//make frame from lines
 		frame = buildFrame();
 		//frame.log();
@@ -158,6 +174,7 @@ public class GridTableMaker extends TableMaker {
 		}
 		
 		grid = new GridBorders(frame.numCols(), frame.numRows());
+		log.info(String.format("Frame cols=%d,rows=%d",frame.numCols(), frame.numRows()));
 		
 		// volver a recorrer. Rellenar CellBorders
 		for(TLine l: lines) {
@@ -179,8 +196,7 @@ public class GridTableMaker extends TableMaker {
 			}
 		}
 		
-		System.out.println("Grid:");
-		//grid.log();
+		log.info("grid:\n" + grid.logStr());
 
 		return makeFromGrid();
 		

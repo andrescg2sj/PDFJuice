@@ -26,6 +26,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
 import org.sj.tools.graphics.sectorizer.ContentRegion;
 import org.sj.tools.graphics.sectorizer.GraphicString;
 import org.sj.tools.graphics.sectorizer.geom.NumberVector;
@@ -186,11 +187,13 @@ public abstract class TableMaker
     		if(addStringToOneArea(areas, gstr)) {
     			count++;
     		} else {
-    			log.info("  Discarded: "+ gstr.getText());
+    			log.info("  failed 1st round: "+ gstr.getText());
     			
     			if(addStringToBestMatch(areas,gstr)) {
     			//if(addStringToFirstMatch(areas,gstr)) {
     				log.info("placed in 2nd round");
+    			} else {
+    				log.info("Discarded");
     			}
     		}
     	}
