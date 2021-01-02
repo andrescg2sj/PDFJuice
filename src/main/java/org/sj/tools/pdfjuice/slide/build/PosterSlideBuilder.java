@@ -122,23 +122,24 @@ public class PosterSlideBuilder extends BasicSlideBuilder {
 		return rects;
 	}
 	
-	public static NumberVector getHeights(List<Rectangle2D> rects) {
-		NumberVector numbers = new NumberVector();
+	public static double[] getHeights(List<Rectangle2D> rects) {
+		double numbers[] = new double[rects.size()];
+		int i=0;
 		for(Rectangle2D r: rects) {
-			numbers.insert(r.getHeight());
+			numbers[i++] = r.getHeight();
 		}
 		return numbers;
 	}
 
-	public static int[] getMinIndexes(NumberVector numbers) {
-		int indexes[] = new int[numbers.size()/2];
+	public static int[] getMinIndexes(double[] heights) {
+		int indexes[] = new int[heights.length/2];
 		int count = 0;
- 		if(numbers.size() < 3) {
+ 		if(heights.length < 3) {
 			return null;
 		}
-		for(int i=1; i< numbers.size()-1; i++) {
-			double value = numbers.get(i);
-			if(value < numbers.get(i-1) && value < numbers.get(i+1)) {
+		for(int i=1; i< heights.length-1; i++) {
+			double value = heights[i];
+			if(value < heights[i-1] && value < heights[i+1]) {
 				indexes[count] = i;
 				count++;
 			}
@@ -155,13 +156,15 @@ public class PosterSlideBuilder extends BasicSlideBuilder {
 	    log.finest("accumulate");
 		List<Rectangle2D> xAccumRects = RectAccumulator.accumulateX(rects);
 		log.finest("setup");
-		NumberVector heights = getHeights(xAccumRects);
+		double heights[] = getHeights(xAccumRects);
 		NumberVector x_voids = new NumberVector();
 		int min_i[] = getMinIndexes(heights);
-		log.finest("for");
-		for(int k=0; k<min_i.length; k++) {
-		    log.finest("k="+k);
-			x_voids.insert(xAccumRects.get(min_i[k]).getCenterY());
+		if(min_i != null) {
+			log.finest("for");
+			for(int k=0; k<min_i.length; k++) {
+				log.finest("k="+k);
+				x_voids.insert(xAccumRects.get(min_i[k]).getCenterY());
+			}
 		}
 		return x_voids;
 

@@ -16,6 +16,8 @@ public class RectAccumulatorTest {
 	Rectangle2D a = new Rectangle2D.Double(0,0,20,10);
 	Rectangle2D b = new Rectangle2D.Double(10,0,20,20);
 
+	rects.add(a);
+	rects.add(b);
 	List<Rectangle2D> result = RectAccumulator.accumulateX(rects);
 
 	Assert.assertEquals("number of rects", 3, result.size());

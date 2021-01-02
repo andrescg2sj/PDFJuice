@@ -113,6 +113,8 @@ public class RectAccumulator {
 	
 	public static List<Rectangle2D> accumulateX(List<Rectangle2D> list) {
 		List<Rectangle2D> result = new LinkedList<Rectangle2D>();
+		if(list.size() == 0)
+			return result;
 
 		NumberVector vect = new NumberVector();
 		for(Rectangle2D r : list) {
@@ -128,7 +130,7 @@ public class RectAccumulator {
 			int rectsOverSegment = 0;
 			double heightSum = 0; 
 			for(Rectangle2D r: list) {
-				if(r.getMinX() <= mid_x && r.getMaxX() <= mid_x) {
+				if(r.getMinX() <= mid_x && r.getMaxX() >= mid_x) {
 					heightSum += r.getHeight();
 					rectsOverSegment ++;
 					if(r.getMinY() < y) {
