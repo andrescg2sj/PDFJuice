@@ -162,7 +162,7 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
     	return rc;
     }
     
-    public <E> List<E> reverse(List<E> list) {
+    public static <E> List<E> reverse(List<E> list) {
     	LinkedList<E> reversed = new LinkedList<E>();
     	Iterator<E> it = list.iterator();
     	while(it.hasNext()) {
@@ -186,6 +186,7 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
     	return reverse(tables);
     }
     
+    @Deprecated
     public List<Table> _old_createTables(boolean clean) {
     	List<TableMaker> makers = createTableMakers();
     	LinkedList<Table> tables = new LinkedList<Table>();

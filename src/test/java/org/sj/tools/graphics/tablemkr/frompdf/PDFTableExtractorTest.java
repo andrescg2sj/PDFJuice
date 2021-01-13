@@ -1,31 +1,40 @@
 package org.sj.tools.graphics.tablemkr.frompdf;
 
-import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.Assert;
 
 
 import org.sj.tools.graphics.tablemkr.Table;
 
 public class PDFTableExtractorTest {
 	
-	public void testPDF(String path, int numTables, int cols, int rows) throws IOException {
+	public List<Table> testPDF(String path, int numTables, int cols, int rows) throws IOException {
 		PDFTableExtractor extractor = new PDFTableExtractor(new File(path));
 		List<Table> tables = extractor.getAllTables(false);
-		assertEquals("t4 - Table count", numTables, tables.size());
+		Assert.assertEquals("t4 - Table count", numTables, tables.size());
 		Table t = tables.get(0);
-		assertEquals("Table cols", cols, t.getCols());
-		assertEquals("Table rows", rows, t.getRows());
+		Assert.assertEquals("Table cols", cols, t.getCols());
+		Assert.assertEquals("Table rows", rows, t.getRows());
+		return tables;
 	}
 
 	@Test
 	public void testingTable4() throws IOException {
 		testPDF("res/test04.pdf",1,2,7);
 	}
+	
+	@Test
+	public void testingMergedCells() throws IOException {
+		List<Table> tables =testPDF("res/test/merged-cells1.pdf",1,3,3);
+		Table t = tables.get(0);
+		Assert.assertTrue(t.get(0, 1).fullText().contains("Merinas"));
+	}
+
 	
 	@Test
 	public void testingTable5() throws IOException {
@@ -60,36 +69,36 @@ public class PDFTableExtractorTest {
 		File file = new File(example);
 		PDFTableExtractor extractor = new PDFTableExtractor(file);
 		List<Table> tables = extractor.getAllTables();
-		assertEquals("Table size", 3, tables.size());
+		Assert.assertEquals("Table size", 3, tables.size());
 		
 		
 		extractor = new PDFTableExtractor(new File("res/test01-1cell.pdf"));
 		tables = extractor.getAllTables();
-		assertEquals("Table count", 1, tables.size());
+		Assert.assertEquals("Table count", 1, tables.size());
 		Table t = tables.get(0);
-		assertEquals("Table cols", 1, t.getCols());
-		assertEquals("Table rows", 1, t.getRows());
-		assertEquals("Table contents:", "Cuadro 1", t.get(0, 0).fullText().trim());
+		Assert.assertEquals("Table cols", 1, t.getCols());
+		Assert.assertEquals("Table rows", 1, t.getRows());
+		Assert.assertEquals("Table contents:", "Cuadro 1", t.get(0, 0).fullText().trim());
 
 		extractor = new PDFTableExtractor(new File("res/test02-2cell.pdf"));
 		tables = extractor.getAllTables();
-		assertEquals("Table count", 1, tables.size());
+		Assert.assertEquals("Table count", 1, tables.size());
 		t = tables.get(0);
-		assertEquals("Table cols", 2, t.getCols());
-		assertEquals("Table rows", 1, t.getRows());
-		assertEquals("Table contents:", "X", t.get(0, 0).fullText().trim());
-		assertEquals("Table contents:", "Y", t.get(1, 0).fullText().trim());
+		Assert.assertEquals("Table cols", 2, t.getCols());
+		Assert.assertEquals("Table rows", 1, t.getRows());
+		Assert.assertEquals("Table contents:", "X", t.get(0, 0).fullText().trim());
+		Assert.assertEquals("Table contents:", "Y", t.get(1, 0).fullText().trim());
 
 		extractor = new PDFTableExtractor(new File("res/test03-4cell.pdf"));
 		tables = extractor.getAllTables();
-		assertEquals("Table count", 1, tables.size());
+		Assert.assertEquals("Table count", 1, tables.size());
 		t = tables.get(0);
-		assertEquals("Table cols", 2, t.getCols());
-		assertEquals("Table rows", 2, t.getRows());
-		assertEquals("Table contents:", "A", t.get(0, 0).fullText().trim());
-		assertEquals("Table contents:", "B", t.get(1, 0).fullText().trim());
-		assertEquals("Table contents:", "C", t.get(0, 1).fullText().trim());
-		assertEquals("Table contents:", "D", t.get(1, 1).fullText().trim());
+		Assert.assertEquals("Table cols", 2, t.getCols());
+		Assert.assertEquals("Table rows", 2, t.getRows());
+		Assert.assertEquals("Table contents:", "A", t.get(0, 0).fullText().trim());
+		Assert.assertEquals("Table contents:", "B", t.get(1, 0).fullText().trim());
+		Assert.assertEquals("Table contents:", "C", t.get(0, 1).fullText().trim());
+		Assert.assertEquals("Table contents:", "D", t.get(1, 1).fullText().trim());
 		
 
 	}
