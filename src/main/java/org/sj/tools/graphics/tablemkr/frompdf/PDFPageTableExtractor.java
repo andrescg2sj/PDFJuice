@@ -290,16 +290,19 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
     	List<Table> cleanTables = new LinkedList<Table>();
     	
     	for(Table t: tables) {
+	    	log.fine("  raw(0,0):" + t.get(0,0).fullText());
+
     		Table clean = t.trim();
     		if(clean != null && !clean.isEmpty() ) {
         		if(clean.countEmptyRows() > 0) {
-        			java.util.Vector<Table> parts = clean.divideOnEmptyRow();
+        			java.util.List<Table> parts = reverse(clean.divideOnEmptyRow());
         	    	log.info("Parts: " + parts.size());
         			for(Table p: parts) {
         				//TODO
         		    	log.info("Simplify: ");
         		    	log.info(p.toHTML());
         				p.simplifyTable();
+        				p = p.trim();
         				cleanTables.add(p);
         			}
         		} else {

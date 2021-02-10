@@ -21,7 +21,6 @@ public class PDFPageTableExtractorTest {
 		
 		List<String> rev = PDFPageTableExtractor.reverse(list);
 		Assert.assertEquals("first element", "C", rev.get(0));
-		
-
 	}
+	
 }

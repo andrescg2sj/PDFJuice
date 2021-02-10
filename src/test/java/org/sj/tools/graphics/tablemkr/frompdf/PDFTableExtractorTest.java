@@ -3,6 +3,7 @@ package org.sj.tools.graphics.tablemkr.frompdf;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Test;
@@ -13,14 +14,38 @@ import org.sj.tools.graphics.tablemkr.Table;
 
 public class PDFTableExtractorTest {
 	
-	public List<Table> testPDF(String path, int numTables, int cols, int rows) throws IOException {
+	public List<Table> testPDFTableNumber(String path, int numTables, boolean clean) throws IOException {
 		PDFTableExtractor extractor = new PDFTableExtractor(new File(path));
-		List<Table> tables = extractor.getAllTables(false);
+		List<Table> tables = extractor.getAllTables(clean);
 		Assert.assertEquals("t4 - Table count", numTables, tables.size());
+		return tables;
+	}
+	
+	public List<Table> testPDF(String path, int numTables, int cols, int rows) throws IOException {
+		return testPDF(path, numTables, cols, rows, false);
+	}
+	
+	public List<Table> testPDF(String path, int numTables, int cols, int rows, boolean clean) throws IOException {
+		List<Table> tables = testPDFTableNumber(path, numTables, clean);
 		Table t = tables.get(0);
 		Assert.assertEquals("Table cols", cols, t.getCols());
 		Assert.assertEquals("Table rows", rows, t.getRows());
 		return tables;
+	}
+	
+	@Test
+	public void testingOrder() throws IOException {
+		
+		List<Table> tables = testPDFTableNumber("res/test/202006-arg-1.pdf",7, true);
+		String heads[] = {"ÁREA", "Formación", "Talleres", "Asesorías", "Denominación", "NACIONALIDAD", "Denominación"};
+		Iterator<Table> it = tables.iterator();
+		for(int i=0; i<heads.length; i++) {
+			Table t = it.next();
+			String test = t.get(0, 0).fullText().trim().substring(0, heads[i].length());
+			String msg = String.format("table %d", i);
+			Assert.assertEquals(msg, heads[i], test);
+		}
+		
 	}
 
 	@Test
