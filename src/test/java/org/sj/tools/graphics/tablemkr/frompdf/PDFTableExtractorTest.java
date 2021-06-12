@@ -33,19 +33,30 @@ public class PDFTableExtractorTest {
 		return tables;
 	}
 	
-	@Test
-	public void testingOrder() throws IOException {
-		
-		List<Table> tables = testPDFTableNumber("res/test/202006-arg-1.pdf",7, true);
-		String heads[] = {"ÁREA", "Formación", "Talleres", "Asesorías", "Denominación", "NACIONALIDAD", "Denominación"};
+	void testFirstCell(String path, String heads[]) throws IOException {
+		List<Table> tables = testPDFTableNumber(path,heads.length, true);
 		Iterator<Table> it = tables.iterator();
 		for(int i=0; i<heads.length; i++) {
 			Table t = it.next();
 			String test = t.get(0, 0).fullText().trim().substring(0, heads[i].length());
-			String msg = String.format("table %d", i);
-			//Assert.assertEquals(msg, heads[i], test);
+			String msg = String.format("tables %d from '%s'", i, pat			//Assert.assertEquals(msg, heads[i], test);
 		}
-		
+	}
+	
+	@Test
+	public void testingOrder() throws IOException {
+		String heads_arg6[] = {"ÁREA", "Formación", "Talleres", "Asesorías", "Denominación", "NACIONALIDAD", "Denominación"};
+		testFirstCell("res/test/202006-arg-1.pdf", heads_arg6);
+
+		String heads_arg11[] = {"ÁREA", "Formación", "Cursos", "Talleres"};
+		testFirstCell("res/test/202011-arg-1.pdf", heads_arg11);
+
+		String heads_cham3[] = {"Idiomas", "Asesorías"};
+		testFirstCell("res/test/202006-cham-3.pdf", heads_cham3);
+
+		String heads_cham5[] = {"Taller", "Actividades", "ACTIVIDADES", "Atenciones"};
+		testFirstCell("res/test/202006-cham-5.pdf", heads_cham5);
+
 	}
 
 	@Test
