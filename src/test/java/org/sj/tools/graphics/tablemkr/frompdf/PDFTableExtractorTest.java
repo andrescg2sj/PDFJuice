@@ -39,7 +39,9 @@ public class PDFTableExtractorTest {
 		for(int i=0; i<heads.length; i++) {
 			Table t = it.next();
 			String test = t.get(0, 0).fullText().trim().substring(0, heads[i].length());
-			String msg = String.format("tables %d from '%s'", i, pat			//Assert.assertEquals(msg, heads[i], test);
+			String msg = String.format("tables %d from '%s'",
+						   i, path);
+			//Assert.assertEquals(msg, heads[i], test);
 		}
 	}
 	
