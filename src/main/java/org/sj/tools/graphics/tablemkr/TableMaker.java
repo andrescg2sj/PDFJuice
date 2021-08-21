@@ -70,6 +70,7 @@ public abstract class TableMaker
     			x.insert(l.getA().getX());
     		}
     	}
+    	log.fine("Building frame: "+ y.size()+" horizontal, " +x.size()+" vertical");
     	return new Frame(x, y);
     }
     

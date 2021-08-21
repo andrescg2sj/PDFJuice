@@ -57,6 +57,10 @@ public class PDFJuice
         optProximity.setRequired(false);
         options.addOption(optProximity);
 
+        Option optLineFilter = new Option("l", "lines", true, "line filtering: black | all");
+        optLineFilter.setRequired(false);
+        options.addOption(optLineFilter);
+
         
 
         CommandLineParser parser = new DefaultParser();

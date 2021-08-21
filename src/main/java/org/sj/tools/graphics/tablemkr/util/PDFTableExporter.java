@@ -105,6 +105,15 @@ public class PDFTableExporter implements CommonInfo
 			proc.setMinProximity(Double.parseDouble(cmd.getOptionValue("p")));
 		}
 		
+		if(cmd.hasOption("l")) {
+			String filter = cmd.getOptionValue("l");
+			if("black".equals(filter)) {
+				proc.properties.setFilterColoredLines(true);
+			} else {
+				proc.properties.setFilterColoredLines(false);
+			}
+		}
+		
 		
         if(cmd.hasOption("c")) {
 	    	proc.setClip(parseDimensions(cmd.getOptionValue("c")));

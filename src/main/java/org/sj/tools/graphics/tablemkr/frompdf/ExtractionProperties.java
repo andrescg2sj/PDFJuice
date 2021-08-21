@@ -22,6 +22,8 @@ public class ExtractionProperties {
     double tableThreshold = DEFAULT_PROXIMITY;
     
     boolean enableDetectShapes = false;
+    
+    boolean filterColoredLines = true;
 
     public ExtractionProperties() {
     	clip = new ClippingArea();
@@ -44,6 +46,10 @@ public class ExtractionProperties {
 
 	public void setMaxLineThickness(double v) {
 		maxLineThickness = v;
+	}
+	
+	public void setFilterColoredLines(boolean filter) {
+		this.filterColoredLines = filter;
 	}
 
 	public void setMinProximity(double v) {

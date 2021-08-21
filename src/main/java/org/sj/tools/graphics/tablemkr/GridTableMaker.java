@@ -180,17 +180,20 @@ public class GridTableMaker extends TableMaker {
 		for(TLine l: lines) {
 			CellLocation cloc = frame.lineToLoc(l, collisionThreshold);
 			
+			if(cloc.getColSpan() == 0 && cloc.getRowSpan() == 0) {
+				log.fine("dot line: "+ l.toString());
+			}
 			//System.out.println("*line: "+l.toString());
 			//System.out.println("*location: "+cloc.toString());
 
 			if(l.isHoriz()) {
 				for(int i=0; i<=cloc.cell.colSpan-1;i++) {
-					//System.out.println("set top: c:"+(cloc.col+i)+", r:"+cloc.row);
+					log.finest("set top: c:"+(cloc.col+i)+", r:"+cloc.row);
 					grid.setTop(cloc.col+i,cloc.row);
 				}
 			} else {
 				for(int i=0; i<=cloc.cell.rowSpan-1;i++) {
-					//System.out.println("set left: c:" +cloc.col+", r:"+(cloc.row+i));
+					log.finest("set left: c:" +cloc.col+", r:"+(cloc.row+i));
 					grid.setLeft(cloc.col,cloc.row+i);
 				}
 			}

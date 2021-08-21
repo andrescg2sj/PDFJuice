@@ -25,6 +25,7 @@
 
 package org.sj.tools.graphics.tablemkr.frompdf;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -69,6 +70,7 @@ import org.sj.tools.graphics.sectorizer.geom.ExpandTransform;
 import org.sj.tools.graphics.sectorizer.geom.HorizBandTransform;
 import org.sj.tools.graphics.tablemkr.GridTableMaker;
 import org.sj.tools.graphics.tablemkr.TLine;
+import org.sj.tools.graphics.tablemkr.TRect;
 import org.sj.tools.graphics.tablemkr.Table;
 import org.sj.tools.graphics.tablemkr.TableMaker;
 import org.sj.tools.graphics.elements.ClippingArea;
@@ -98,6 +100,7 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
 	
     GStringBuffer regionText = new GStringBuffer();
     LinkedList<TLine> lines = new LinkedList<TLine>();
+    LinkedList<TRect> rects = new LinkedList<TRect>();
     LinkedList<GraphicString> gstrings = new LinkedList<GraphicString>();
     
     LinkedList<Table> generatedTables = new LinkedList<Table>(); 
@@ -579,6 +582,20 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
 	path.clear();
     }
     
+    public static Color awtColor(PDColor c) {
+    	try {
+    		return new Color(c.toRGB());
+    	} catch(IOException ie) {
+    		log.warning("Could not generate color: "+ie.getMessage());
+    		
+    	}
+    	return new Color(0); 
+    }
+    
+    public void fillRectangle(Rectangle2D rect, PDColor clr) {
+    	rects.add(new TRect(rect, awtColor(clr)));
+    }
+    
     @Override
     public void fillPath(int windingRule) throws IOException
     {
@@ -607,7 +624,7 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
     		} else if(s instanceof Rectangle2D) {
     			Rectangle2D rect = (Rectangle2D) s;
     			if(isVerticalStrip(rect,properties.maxLineThickness)) {
-    				if(nsclr.toRGB() == 0) {
+    				if(!properties.filterColoredLines || nsclr.toRGB() == 0) {
     					//tmaker.add(buildVertLine(rect));
     					lines.add(buildVertLine(rect));
     					this.lineCount++;
@@ -615,16 +632,21 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
     					log.finest("Non black vert. line");
     				}
     			} else if(isHorizontalStrip(rect,properties.maxLineThickness)){
-    				if(nsclr.toRGB() == 0) {
+    				if(!properties.filterColoredLines || nsclr.toRGB() == 0) {
     					//tmaker.add(buildHorizLine(rect));
     					lines.add(buildHorizLine(rect));
     					this.lineCount++;
     				} else {
     					log.finest("Non black horiz. line");
     				}
-    			} else if(properties.enableDetectShapes) {
-					log.info("Stroke: "+ rect.toString());
-    				strokeRectangle(rect);
+    			} else {
+    				
+    				fillRectangle(rect, clr);
+    				/*
+    				if(properties.enableDetectShapes) {
+    					log.info("Stroke: "+ rect.toString());
+        				strokeRectangle(rect);
+    				}*/
     			}
     		}
     		
