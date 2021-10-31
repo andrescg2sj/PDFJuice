@@ -50,11 +50,13 @@ import org.apache.pdfbox.util.Vector;
 import org.sj.tools.graphics.pdf.PDFString;
 import org.sj.tools.graphics.sectorizer.StringRegion;
 import org.sj.tools.graphics.sectorizer.StrRegionCluster;
+import org.sj.tools.pdfjuice.slide.SldImage;
 import org.sj.tools.pdfjuice.slide.SldText;
 import org.sj.tools.pdfjuice.slide.Slide;
 import org.sj.tools.pdfjuice.slide.build.SlideBuilder;
 import org.sj.tools.graphics.elements.ClippingArea;
 import org.sj.tools.graphics.elements.GrPath;
+import org.sj.tools.graphics.elements.Image;
 
 public class SlideExtractor extends PDFGraphicsStreamEngine
 {
@@ -72,6 +74,7 @@ public class SlideExtractor extends PDFGraphicsStreamEngine
 	
     PDFStringBuffer regionText = new PDFStringBuffer();
 	StrRegionCluster cluster = new StrRegionCluster();
+	java.util.Vector<Image> images = new java.util.Vector<Image>();
 	
 	int rectCount = 0;
 	int lineCount = 0;
@@ -122,7 +125,12 @@ public class SlideExtractor extends PDFGraphicsStreamEngine
     }
 
     public Slide makeSlide(SlideBuilder sbuild) {
-    	return sbuild.build(cluster);
+    	Slide s = sbuild.build(cluster);
+    	for(Image img: images) {
+    		SldImage si = new SldImage(img);
+    		s.add(si);
+    	}
+    	return s;
     }
 
     //Deprecated?
@@ -235,6 +243,8 @@ public class SlideExtractor extends PDFGraphicsStreamEngine
     public void drawImage(PDImage pdImage) throws IOException
     {
         log.finest("drawImage");
+        Image img = new Image(path.getPosition(), pdImage.getImage());
+        images.add(img);
     }
     
     @Override

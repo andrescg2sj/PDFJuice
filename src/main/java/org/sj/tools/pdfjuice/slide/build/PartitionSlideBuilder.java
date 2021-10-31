@@ -136,6 +136,10 @@ public class PartitionSlideBuilder extends BasicSlideBuilder {
 		int i_max = -1;
 		ContentRegion<GraphicString> last = null;
 		
+		if (cluster.getNumberOfRegions() == 0) {
+			return null;
+		}
+		
 		/* Title is probably not more than half of the slide */
 		for(int i=0; i<cluster.getNumberOfRegions()/2;i++) {
 			ContentRegion<GraphicString> creg = cluster.getRegion(i);
@@ -206,7 +210,9 @@ public class PartitionSlideBuilder extends BasicSlideBuilder {
 
 		
 		Slide s = new Slide();
-		s.add(buildTitle(titleCR));
+				
+		if(titleCR != null)
+			s.add(buildTitle(titleCR));
 		//s.add(buildContent(contentCl));
 		SldObject content = buildListFromCluster(cluster);
 		if(content != null)

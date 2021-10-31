@@ -87,6 +87,9 @@ public class GrPath {
     {
     	return elements.size();
     }
-	
+    
+    public Point2D getPosition() {
+    	return position;
+    }
 }
 
