@@ -25,6 +25,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
+import org.sj.tools.graphics.tablemkr.util.PDFTableExporter;
+import org.sj.tools.pdfjuice.ExampleGenerator;
+
 
 public class PDFJuiceWindow extends JFrame {
 		
@@ -111,12 +114,14 @@ public class PDFJuiceWindow extends JFrame {
 
 
 	      JLabel lblIn = new JLabel("Input filename:");
-	      final JTextField fldFilenameIn = new JTextField("abc");
-
+	      final JTextField fldFilenameIn = new JTextField();
+	      JButton btnBrowseIn = new JButton("(in)...");
 	      
-	      JButton btnAdd = new JButton("(in)...");
+	      JLabel lblOut = new JLabel("Output filename:");
+	      final JTextField fldFilenameOut = new JTextField();
+	      JButton btnBrowseOut = new JButton("(out)...");
 	      
-	      btnAdd.addActionListener(new ActionListener() {
+	      btnBrowseIn.addActionListener(new ActionListener() {
 	    	  @Override
 	    	  public void actionPerformed(ActionEvent e) {
 	    		  final JFileChooser fc = new JFileChooser();
@@ -126,12 +131,12 @@ public class PDFJuiceWindow extends JFrame {
 
 	    	        if (returnVal == JFileChooser.APPROVE_OPTION) {
 	    	        	
-	    	            File files[]  = fc.getSelectedFiles();
-	    	            //This is where a real application would open the file.
-	    	            //log.append("Opening: " + file.getName() + "." + newline);
-	    	            for(File f: files) {
-	    	            	//docList.addPath(f);
-	    	            }
+	    	            File file = fc.getSelectedFile();
+	    	            String filenameIn = file.getAbsolutePath();
+	    	            fldFilenameIn.setText(filenameIn);
+	    	            String defFilenameOut = ExampleGenerator.changeExtension(filenameIn, ".html");
+	    	            fldFilenameOut.setText(defFilenameOut);
+
 	    	        } else {
 	    	            // log.append("Open command cancelled by user." + newline);
 
@@ -139,12 +144,7 @@ public class PDFJuiceWindow extends JFrame {
 	    	  }
 	      });
 	      
-	      JLabel lblOut = new JLabel("Output filename:");
-	      final JTextField fldFilenameOut = new JTextField("abc");
-	      
-	      JButton btnBrowse = new JButton("(out)...");
-	      // TODO: browse...
-	      btnBrowse.addActionListener(new ActionListener() {
+	      btnBrowseOut.addActionListener(new ActionListener() {
 	    	  @Override
 	    	  public void actionPerformed(ActionEvent e) {
 	    		  final JFileChooser fc = new JFileChooser();
@@ -152,21 +152,15 @@ public class PDFJuiceWindow extends JFrame {
 
 	    	        if (returnVal == JFileChooser.APPROVE_OPTION) {
 	    	            File file = fc.getSelectedFile();
-	    	            //This is where a real application would open the file.
-	    	            //log.append("Opening: " + file.getName() + "." + newline);
-	    	            
-	    	            //DefaultListModel<String> model = (DefaultListModel<String>) listBox.getModel();
-	    	            //docs.addElement(file.getAbsolutePath());
-	    	            fldFilenameIn.setText(file.getAbsolutePath());
+	    	            fldFilenameOut.setText(file.getAbsolutePath());
 	    	        } else {
 	    	            // log.append("Open command cancelled by user." + newline);
-
 	    	        }
 	    	  }
 	      });
 
 
-	      JButton btnProcess = new JButton("Procesar");
+	      JButton btnProcess = new JButton("Process");
 	      btnProcess.addActionListener(new ActionListener() {
 	    	  @Override
 	    	  public void actionPerformed(ActionEvent e) {
@@ -177,18 +171,21 @@ public class PDFJuiceWindow extends JFrame {
 	    	  }
 	      });
 
-	      panel.add(btnAdd);
+	      panel.add(btnBrowseIn);
 	      panel.add(lblIn);
 	      panel.add(fldFilenameIn);
 	      panel.add(lblOut);
 	      panel.add(fldFilenameOut);
-	      panel.add(btnBrowse);
+	      panel.add(btnBrowseOut);
 	      panel.add(btnProcess);
 	      frame.getContentPane().add(panel, BorderLayout.CENTER);    
 	   }
 	   
 	   public void extractTables(String filenameIn, String filenameOut) { 
 		   log.info("extactTables in:"+filenameIn+ " out:"+filenameOut);
+		   PDFTableExporter proc = new PDFTableExporter(); 
+		   proc.setDestination(filenameOut);
+   			proc.run(filenameIn);
 	   }
 	   
 }
