@@ -160,7 +160,7 @@ public class PDFJuiceWindow extends JFrame {
 	      });
 
 
-	      JButton btnProcess = new JButton("Process");
+	      JButton btnProcess = new JButton("Export to HTML");
 	      btnProcess.addActionListener(new ActionListener() {
 	    	  @Override
 	    	  public void actionPerformed(ActionEvent e) {
