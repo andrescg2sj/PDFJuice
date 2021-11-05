@@ -1,7 +1,7 @@
 /*
  * Apache License
  *
- * Copyright (c) 2021 andrescg2sj
+ * Copyright (c) 2021 Andres Gonzalez SJ
  *
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
