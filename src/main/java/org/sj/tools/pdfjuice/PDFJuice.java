@@ -28,6 +28,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.sj.tools.graphics.tablemkr.util.PDFTableExporter;
+import org.sj.tools.pdfjuice.gui.PDFJuiceWindow;
 import org.sj.tools.pdfjuice.slide.util.PDFSlidesExporter;
 
 public class PDFJuice 
@@ -49,6 +50,15 @@ public class PDFJuice
 		String inFilename = DEFAULT_PATH;
 		
 		Options options = new Options();
+		
+		Option optHelp = new Option("h", "help", false, "Shows this help message.");
+        optHelp.setRequired(false);
+        options.addOption(optHelp);
+
+		Option optGui = new Option("g", "gui", false, "Launches graphic user interface.");
+        optGui.setRequired(false);
+        options.addOption(optGui);
+
 
 		Option optInput = new Option("i", "input", true, "input file");
         optInput.setRequired(true);
@@ -88,29 +98,36 @@ public class PDFJuice
         try {
             cmd = parser.parse(options, args);
             
-            String remaining[] = cmd.getArgs();
+            if(cmd.hasOption("h")) {
+                formatter.printHelp("utility-name", options);
+            	
+            } else if(cmd.hasOption("g")) {
+            	PDFJuiceWindow.createWindow();
             
-    		inFilename = cmd.getOptionValue("i");
-    		outFilename = cmd.getOptionValue("o");
+            } else {
+	            String remaining[] = cmd.getArgs();
+	            
+	    		inFilename = cmd.getOptionValue("i");
+	    		outFilename = cmd.getOptionValue("o");
+	    		
+	    		if(cmd.hasOption("m")) {
+	    			String sMode = cmd.getOptionValue("m"); 
+	    			if("slide".equals(sMode)) {
+	    				slidesToHtml(inFilename, outFilename);
+	    			} else if("table".equals(sMode)) {
+	    	    		//PDFTableExporter proc = PDFTableExporter.parseOptions(remaining);
+	    				PDFTableExporter proc = PDFTableExporter.make(cmd);
+	    	    		//proc.setShapeDetection(true);
+	    	    		proc.setDestination(outFilename);
+	    	    		proc.run(inFilename);
+	    			} else if("poster".equals(sMode)) {
+	    				posterToHtml(inFilename, outFilename);
+	    			} else if("text".equals(sMode)) {
+	    				slidesToText(inFilename, outFilename);
+	    			}
+	    		}
     		
-    		if(cmd.hasOption("m")) {
-    			String sMode = cmd.getOptionValue("m"); 
-    			if("slide".equals(sMode)) {
-    				slidesToHtml(inFilename, outFilename);
-    			} else if("table".equals(sMode)) {
-    	    		//PDFTableExporter proc = PDFTableExporter.parseOptions(remaining);
-    				PDFTableExporter proc = PDFTableExporter.make(cmd);
-    	    		//proc.setShapeDetection(true);
-    	    		proc.setDestination(outFilename);
-    	    		proc.run(inFilename);
-    			} else if("poster".equals(sMode)) {
-    				posterToHtml(inFilename, outFilename);
-    			} else if("text".equals(sMode)) {
-    				slidesToText(inFilename, outFilename);
-    			}
-    		}
-    		
-    		
+            }
         } catch (ParseException e) {
             System.out.println(e.getMessage());
             

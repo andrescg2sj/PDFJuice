@@ -45,6 +45,22 @@ java -cp target/PDFJuice-1.3-SNAPSHOT-jar-with-dependencies.jar org.sj.tools.pdf
 
 The `mode` option may be `slide` or `table`, depending on which kind of information you want to extract (`text` and `poster` modes are under development).
 
+More information (command line help):
+
+```
+Missing required options: i, o, m
+usage: utility-name
+ -c,--clip <arg>        format: x,y,width,height
+ -g,--gui               Launches graphic user interface.
+ -h,--help              Shows this help message.
+ -i,--input <arg>       input file
+ -l,--lines <arg>       line filtering: black | all
+ -m,--mode <arg>        extraction mode: slide|table|text
+ -o,--output <arg>      output file
+ -p,--proximity <arg>   minimum distance between tables
+ -t,--thickness <arg>   máximum line thickness
+```
+
 Logging
 ------
 

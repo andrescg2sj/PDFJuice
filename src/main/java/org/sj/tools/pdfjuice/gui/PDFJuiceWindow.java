@@ -111,7 +111,7 @@ public class PDFJuiceWindow extends JFrame {
 	      createWindow();
 	   }	
 
-	   private static void createWindow() {    
+	   public static void createWindow() {    
 	      PDFJuiceWindow win = new PDFJuiceWindow();
 	      win.setVisible(true);
 	   }
