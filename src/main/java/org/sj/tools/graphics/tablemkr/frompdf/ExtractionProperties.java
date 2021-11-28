@@ -18,8 +18,11 @@
  */
 package org.sj.tools.graphics.tablemkr.frompdf;
 
+import java.awt.Color;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
 
+import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.sj.tools.graphics.elements.ClippingArea;
 
 public class ExtractionProperties {
@@ -28,6 +31,8 @@ public class ExtractionProperties {
 
     public static final double DEFAULT_THICKNESS = 2;
     public static final double DEFAULT_PROXIMITY = 0.3;
+    
+    public static final int RGB_MASK = 0xffffff;
     
     /**
      * maximum thickness of a rectangle in order to be considered as a line.
@@ -42,6 +47,8 @@ public class ExtractionProperties {
     boolean enableDetectShapes = false;
     
     boolean filterColoredLines = true;
+    
+    Color lineFilterColor = Color.BLACK;
 
     public ExtractionProperties() {
     	clip = new ClippingArea();
@@ -78,10 +85,19 @@ public class ExtractionProperties {
 	public void setClipRect(Rectangle2D rect) {
 		clip.set(rect);
 	}
-
-
-
-
-
+	
+	/**
+	 * Check if a color passes the filter (or the filter is not activated).
+	 * 
+	 * @param rgb (red, green, blue) color specification.
+	 * @return true if the given rgb color passes the filter (or everything is accepted).
+	 */
+	public boolean filterColor(int rgb) {
+		if(this.filterColoredLines) {
+			return ((lineFilterColor.getRGB() & RGB_MASK) == (rgb & RGB_MASK));
+		}
+		return true;
+	}
+	
 
 }

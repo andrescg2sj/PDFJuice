@@ -630,6 +630,7 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
     	PDColor clr = gs.getStrokingColor();
         log.finest("fillPath (color="+clr.toRGB()+")");
         PDColor nsclr = gs.getNonStrokingColor();
+        int rgbNSclr = nsclr.toRGB();
         log.finest("         (non stroking="+nsclr.toRGB()+")");
         
         log.finest("         (path:"+path.numElements()+")");
@@ -642,20 +643,20 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
     		} else if(s instanceof Rectangle2D) {
     			Rectangle2D rect = (Rectangle2D) s;
     			if(isVerticalStrip(rect,properties.maxLineThickness)) {
-    				if(!properties.filterColoredLines || nsclr.toRGB() == 0) {
+    				if(properties.filterColor(nsclr.toRGB())) {
     					//tmaker.add(buildVertLine(rect));
     					lines.add(buildVertLine(rect));
     					this.lineCount++;
     				} else {
-    					log.finest("Non black vert. line");
+    					log.finest("vert. line filtered out by color.");
     				}
     			} else if(isHorizontalStrip(rect,properties.maxLineThickness)){
-    				if(!properties.filterColoredLines || nsclr.toRGB() == 0) {
+    				if(properties.filterColor(nsclr.toRGB())) {
     					//tmaker.add(buildHorizLine(rect));
     					lines.add(buildHorizLine(rect));
     					this.lineCount++;
     				} else {
-    					log.finest("Non black horiz. line");
+    					log.finest("horiz. line filtered out by color.");
     				}
     			} else {
     				
