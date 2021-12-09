@@ -18,6 +18,7 @@
  */
 package org.sj.tools.pdfjuice;
 
+import java.awt.Color;
 import java.awt.Rectangle;
 
 import org.apache.commons.cli.CommandLine;
@@ -42,7 +43,6 @@ public class PDFJuice
 	      //must initialize loggers after setting above property
 	      //LOGGER = Logger.getLogger(MyClass.class.getName());
 	  }*/
-
 
 	
     public static void main(String args[]) {
@@ -85,7 +85,7 @@ public class PDFJuice
         optProximity.setRequired(false);
         options.addOption(optProximity);
 
-        Option optLineFilter = new Option("l", "lines", true, "line filtering: black | all");
+        Option optLineFilter = new Option("l", "lines", true, "line filtering: <color_name> | 0x<rrggbb> | all");
         optLineFilter.setRequired(false);
         options.addOption(optLineFilter);
 
@@ -137,6 +137,8 @@ public class PDFJuice
         }
 	
     }
+    
+
     
 	public static void posterToHtml(String inFilename, String outFilename) {
 		try {

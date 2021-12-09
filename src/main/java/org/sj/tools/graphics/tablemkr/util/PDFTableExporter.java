@@ -20,6 +20,7 @@
 
 package org.sj.tools.graphics.tablemkr.util;
 
+import java.awt.Color;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -57,6 +58,11 @@ public class PDFTableExporter implements CommonInfo
 			"  border: 1px solid black;\r\n" + 
 			"}</style>"
 			+ "</head>";
+
+    static final Color[] COLORS = {Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY, Color.gray, 
+    		Color.GREEN, Color.lightGray, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.RED, Color.WHITE, Color.YELLOW};
+    
+    static final String ALL_COLORS = "all";
 
     //File inFile; 
     PDDocument doc;
@@ -107,10 +113,15 @@ public class PDFTableExporter implements CommonInfo
 		
 		if(cmd.hasOption("l")) {
 			String filter = cmd.getOptionValue("l");
-			if("black".equals(filter)) {
-				proc.properties.setFilterColoredLines(true);
-			} else {
+			Color c = parseColorSpec(filter);
+			
+			if(c == null) {
+				if(!filter.equals(ALL_COLORS)) {
+					System.err.println("Color filter specification not recognized. Filter disabled.");
+				}
 				proc.properties.setFilterColoredLines(false);
+			} else {
+				proc.properties.setFilterColoredLines(true);
 			}
 		}
 		
@@ -254,6 +265,33 @@ public class PDFTableExporter implements CommonInfo
     	    e.printStackTrace();
     	}
 
+    }
+    
+    /**
+     * 
+     * @param srgb red green blue values in hexadecimal
+     * @return Colore
+     */
+    static Color parseRGB(String srgb) {
+    	final int HEX_BASE = 16;
+    	if(srgb.length() != 6) {
+    		return null;
+    	}
+    	int irgb = Integer.parseInt(srgb, HEX_BASE);
+    	return new Color(irgb);
+    }
+    
+    public static Color parseColorSpec(String spec) {
+    	final String hexPrefix = "0x";
+    	if(spec.startsWith("0x")) {
+    		return parseRGB(spec.substring(hexPrefix.length()));
+    	}
+    	for(Color c: COLORS) {
+    		if(c.getClass().getName().toUpperCase().equals(spec.toUpperCase())) {
+    			return c;
+    		}
+    	}
+    	return null;
     }
     
     public void setDestination(String path) {

@@ -54,7 +54,7 @@ usage: utility-name
  -g,--gui               Launches graphic user interface.
  -h,--help              Shows this help message.
  -i,--input <arg>       input file
- -l,--lines <arg>       line filtering: black | all
+ -l,--lines <arg>       line filtering: <color_name> | 0x<rrggbb> | all
  -m,--mode <arg>        extraction mode: slide|table|text
  -o,--output <arg>      output file
  -p,--proximity <arg>   minimum distance between tables
