@@ -61,16 +61,16 @@ public class PDFJuice
 
 
 		Option optInput = new Option("i", "input", true, "input file");
-        optInput.setRequired(true);
+        optInput.setRequired(false);
         options.addOption(optInput);
 
 		
         Option optOutput = new Option("o", "output", true, "output file");
-        optOutput.setRequired(true);
+        optOutput.setRequired(false);
         options.addOption(optOutput);
         
         Option optMode = new Option("m", "mode", true, "extraction mode: slide|table|text");
-        optMode.setRequired(true);
+        optMode.setRequired(false);
         options.addOption(optMode);
         
         Option clip = new Option("c", "clip", true, "format: x,y,width,height");
@@ -105,27 +105,32 @@ public class PDFJuice
             	PDFJuiceWindow.createWindow();
             
             } else {
+            	final String required_opts[] = {"i","o","m"};
 	            String remaining[] = cmd.getArgs();
 	            
-	    		inFilename = cmd.getOptionValue("i");
-	    		outFilename = cmd.getOptionValue("o");
+	            for(String opt: required_opts) {
+	            	if(!cmd.hasOption(opt)) {
+		            	throw new ParseException("missing option: " + opt);
+	            	}
+	            }
+
+	            inFilename = cmd.getOptionValue("i");
+	            outFilename = cmd.getOptionValue("o");
 	    		
-	    		if(cmd.hasOption("m")) {
-	    			String sMode = cmd.getOptionValue("m"); 
-	    			if("slide".equals(sMode)) {
-	    				slidesToHtml(inFilename, outFilename);
-	    			} else if("table".equals(sMode)) {
-	    	    		//PDFTableExporter proc = PDFTableExporter.parseOptions(remaining);
-	    				PDFTableExporter proc = PDFTableExporter.make(cmd);
-	    	    		//proc.setShapeDetection(true);
-	    	    		proc.setDestination(outFilename);
-	    	    		proc.run(inFilename);
-	    			} else if("poster".equals(sMode)) {
-	    				posterToHtml(inFilename, outFilename);
-	    			} else if("text".equals(sMode)) {
-	    				slidesToText(inFilename, outFilename);
-	    			}
-	    		}
+    			String sMode = cmd.getOptionValue("m"); 
+    			if("slide".equals(sMode)) {
+    				slidesToHtml(inFilename, outFilename);
+    			} else if("table".equals(sMode)) {
+    	    		//PDFTableExporter proc = PDFTableExporter.parseOptions(remaining);
+    				PDFTableExporter proc = PDFTableExporter.make(cmd);
+    	    		//proc.setShapeDetection(true);
+    	    		proc.setDestination(outFilename);
+    	    		proc.run(inFilename);
+    			} else if("poster".equals(sMode)) {
+    				posterToHtml(inFilename, outFilename);
+    			} else if("text".equals(sMode)) {
+    				slidesToText(inFilename, outFilename);
+    			}
     		
             }
         } catch (ParseException e) {
