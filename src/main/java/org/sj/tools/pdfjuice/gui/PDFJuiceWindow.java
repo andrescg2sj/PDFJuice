@@ -130,11 +130,11 @@ public class PDFJuiceWindow extends JFrame {
 
 	      JLabel lblIn = new JLabel("Input filename:");
 	      final JTextField fldFilenameIn = new JTextField();
-	      JButton btnBrowseIn = new JButton("(in)...");
+	      JButton btnBrowseIn = new JButton("Select input filename...");
 	      
 	      JLabel lblOut = new JLabel("Output filename:");
 	      final JTextField fldFilenameOut = new JTextField();
-	      JButton btnBrowseOut = new JButton("(out)...");
+	      JButton btnBrowseOut = new JButton("Select output filename...");
 	      
 	      btnBrowseIn.addActionListener(new ActionListener() {
 	    	  @Override
@@ -186,9 +186,9 @@ public class PDFJuiceWindow extends JFrame {
 	    	  }
 	      });
 
-	      panel.add(btnBrowseIn);
 	      panel.add(lblIn);
 	      panel.add(fldFilenameIn);
+	      panel.add(btnBrowseIn);
 	      panel.add(lblOut);
 	      panel.add(fldFilenameOut);
 	      panel.add(btnBrowseOut);
