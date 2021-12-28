@@ -36,8 +36,15 @@ java -cp target/PDFJuice-1.3-SNAPSHOT-jar-with-dependencies.jar org.sj.tools.pdf
 ```
 
 
-Use on specific files
+Use graphic user interface
 -----
+
+See [this tutorial](https://www.youtube.com/watch?v=prMFdpaBLr4).
+
+
+Run from command line 
+-----
+
 
 ```
 java -cp target/PDFJuice-1.3-SNAPSHOT-jar-with-dependencies.jar org.sj.tools.pdfjuice.PDFJuice -m [mode] -i [input-filename] -o [output-filename]
