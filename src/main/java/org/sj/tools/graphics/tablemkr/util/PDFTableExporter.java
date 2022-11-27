@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -47,6 +48,9 @@ import org.sj.tools.pdfjuice.CommonInfo;
 
 public class PDFTableExporter implements CommonInfo
 {
+	
+	private static Logger log = Logger.getLogger("org.sj.tools.graphics.tablemkr.util.PDFTableExporter");
+
     
 	public static final String HTML_HEAD = 
 			"<html><head>"
@@ -210,9 +214,13 @@ public class PDFTableExporter implements CommonInfo
     public void writeHTMLTables(List<Table> tables, OutputStreamWriter out) throws IOException {
     	
     	for(Table t: tables) {
-    		String s = t.toHTML();
-    		out.write(s);
-			out.write("<br/>"+CommonInfo.NEW_LINE);
+    		if(t == null) {
+    			log.warning("Null table.");
+    		} else {
+    			String s = t.toHTML();
+    			out.write(s);
+    			out.write("<br/>"+CommonInfo.NEW_LINE);
+    		}
 
     	}
     }

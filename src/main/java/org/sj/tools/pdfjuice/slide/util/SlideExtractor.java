@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.pdfbox.contentstream.PDFGraphicsStreamEngine;
@@ -43,7 +44,9 @@ import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImage;
+import org.apache.pdfbox.pdmodel.graphics.state.PDGraphicsState;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
 import org.apache.pdfbox.util.Matrix;
 import org.apache.pdfbox.util.Vector;
@@ -56,7 +59,7 @@ import org.sj.tools.pdfjuice.slide.Slide;
 import org.sj.tools.pdfjuice.slide.build.SlideBuilder;
 import org.sj.tools.graphics.elements.ClippingArea;
 import org.sj.tools.graphics.elements.GrPath;
-import org.sj.tools.graphics.elements.Image;
+import org.sj.tools.graphics.elements.ImageFrame;
 
 public class SlideExtractor extends PDFGraphicsStreamEngine
 {
@@ -74,7 +77,7 @@ public class SlideExtractor extends PDFGraphicsStreamEngine
 	
     PDFStringBuffer regionText = new PDFStringBuffer();
 	StrRegionCluster cluster = new StrRegionCluster();
-	java.util.Vector<Image> images = new java.util.Vector<Image>();
+	java.util.Vector<ImageFrame> images = new java.util.Vector<ImageFrame>();
 	
 	int rectCount = 0;
 	int lineCount = 0;
@@ -126,11 +129,19 @@ public class SlideExtractor extends PDFGraphicsStreamEngine
 
     public Slide makeSlide(SlideBuilder sbuild) {
     	Slide s = sbuild.build(cluster);
-    	for(Image img: images) {
+    	for(ImageFrame img: images) {
     		SldImage si = new SldImage(img);
     		s.add(si);
     	}
     	return s;
+    }
+    
+    public int countImages() {
+    	return images.size();
+    }
+    
+    public ImageFrame getImage(int n) {
+    	return images.elementAt(n);
     }
 
     //Deprecated?
@@ -166,11 +177,17 @@ public class SlideExtractor extends PDFGraphicsStreamEngine
     
     /**
      * Runs the engine on the current page.
+     * 
      *
      * @throws IOException If there is an IO error while drawing the page.
      */
     public void run() throws IOException
     {
+    	/* TODO: This interface needs redesign. Rather than being called isolated,
+     * this should be called either form the constructor, or from a method that 
+     * returns some data. */
+
+    	
         processPage(getPage());
         for (PDAnnotation annotation : getPage().getAnnotations())
         {
@@ -243,7 +260,7 @@ public class SlideExtractor extends PDFGraphicsStreamEngine
     public void drawImage(PDImage pdImage) throws IOException
     {
         log.finest("drawImage");
-        Image img = new Image(path.getPosition(), pdImage.getImage());
+        ImageFrame img = new ImageFrame(path.getPosition(), pdImage.getImage());
         images.add(img);
     }
     
@@ -331,6 +348,14 @@ public class SlideExtractor extends PDFGraphicsStreamEngine
     {
     	pushCurrent();
         log.finest("fillPath");
+        
+        if(log.getLevel() == Level.FINEST) {
+        	PDGraphicsState gs = this.getGraphicsState();
+        	PDColor clr = gs.getNonStrokingColor();
+        	//gs.getNonStrokingColor()
+        	log.finest("Stroking color: " +clr.toRGB());
+        }
+        
     }
     @Override
     public void fillAndStrokePath(int windingRule) throws IOException

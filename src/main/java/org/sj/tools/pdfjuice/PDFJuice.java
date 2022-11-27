@@ -20,6 +20,7 @@ package org.sj.tools.pdfjuice;
 
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.io.IOException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -31,6 +32,8 @@ import org.apache.commons.cli.ParseException;
 import org.sj.tools.graphics.tablemkr.util.PDFTableExporter;
 import org.sj.tools.pdfjuice.gui.PDFJuiceWindow;
 import org.sj.tools.pdfjuice.slide.util.PDFSlidesExporter;
+import org.sj.tools.pdfjuice.util.PDFCreator;
+import org.sj.tools.pdfjuice.util.RawExtractor; 
 
 public class PDFJuice 
 {
@@ -69,7 +72,7 @@ public class PDFJuice
         optOutput.setRequired(false);
         options.addOption(optOutput);
         
-        Option optMode = new Option("m", "mode", true, "extraction mode: slide|table|text");
+        Option optMode = new Option("m", "mode", true, "extraction mode: slide|table|image|text|bookmark");
         optMode.setRequired(false);
         options.addOption(optMode);
         
@@ -89,6 +92,15 @@ public class PDFJuice
         optLineFilter.setRequired(false);
         options.addOption(optLineFilter);
 
+        Option optTest = new Option("t", "test", false, "test create PDF");
+        optTest.setRequired(false);
+        options.addOption(optTest);
+        
+        Option optCount = new Option("c", "count", true, "Show PDF page count.");
+        optCount.setRequired(false);
+        options.addOption(optTest);
+
+
         
 
         CommandLineParser parser = new DefaultParser();
@@ -103,10 +115,18 @@ public class PDFJuice
             	
             } else if(cmd.hasOption("g")) {
             	PDFJuiceWindow.createWindow();
-            
+            } else if(cmd.hasOption("t")) {
+            	createTestPDF();
+            } else if(cmd.hasOption("c")) {
+            	inFilename = cmd.getOptionValue("c");
+	            String remaining[] = cmd.getArgs();
+            	showPageCount(inFilename);
+	            for(String filename: remaining) {
+	            	showPageCount(filename);
+	            }
+
             } else {
             	final String required_opts[] = {"i","o","m"};
-	            String remaining[] = cmd.getArgs();
 	            
 	            for(String opt: required_opts) {
 	            	if(!cmd.hasOption(opt)) {
@@ -128,8 +148,12 @@ public class PDFJuice
     	    		proc.run(inFilename);
     			} else if("poster".equals(sMode)) {
     				posterToHtml(inFilename, outFilename);
+    			} else if("image".equals(sMode)) {
+    				saveImages(inFilename, outFilename);
     			} else if("text".equals(sMode)) {
     				slidesToText(inFilename, outFilename);
+    			} else if("bookmark".equals(sMode)) {
+    				extractBookmarks(inFilename, outFilename);
     			}
     		
             }
@@ -143,6 +167,34 @@ public class PDFJuice
 	
     }
     
+    public static void extractBookmarks(String inFilename, String outFilename) {
+    	RawExtractor be;
+		try {
+			be = new RawExtractor(inFilename, outFilename);
+	    	be.extractBookmarks();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public static void createTestPDF() {
+    	PDFCreator c = new PDFCreator("out/test.pdf");
+    	c.create();
+    }
+    
+
+	public static void saveImages(String inFilename, String outFilename) {
+		try {
+			PDFSlidesExporter proc = new PDFSlidesExporter(inFilename);
+			proc.showPageCount();
+			proc.exportImages();
+			//TODO: all pages
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
 
     
 	public static void posterToHtml(String inFilename, String outFilename) {
@@ -155,6 +207,16 @@ public class PDFJuice
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public static void showPageCount(String inFilename) {
+		try {
+			PDFSlidesExporter proc = new PDFSlidesExporter(inFilename);
+			int pages = proc.countPages();
+			System.out.println(String.format("%s: %d pages", inFilename, pages));
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 

@@ -324,7 +324,11 @@ public class PDFPageTableExtractor extends PDFGraphicsStreamEngine implements Co
         		    	log.info(p.toHTML());
         				p.simplifyTable();
         				p = p.trim();
-        				cleanTables.add(p);
+        				if(p == null) {
+        					log.warning("Trimmed table == null. Debug");
+        				} else {
+        					cleanTables.add(p);
+        				}
         			}
         		} else {
         			cleanTables.add(clean);

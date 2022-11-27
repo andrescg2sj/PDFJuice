@@ -18,6 +18,8 @@
  */
 package org.sj.tools.pdfjuice.slide.util;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -29,6 +31,7 @@ import java.util.logging.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.sj.tools.graphics.elements.ImageFrame;
 import org.sj.tools.pdfjuice.slide.Slide;
 import org.sj.tools.pdfjuice.slide.build.BasicSlideBuilder;
 import org.sj.tools.pdfjuice.slide.build.PartitionSlideBuilder;
@@ -62,6 +65,10 @@ public class PDFSlidesExporter {
 		
 	}
 	
+	public int countPages() {
+		return doc.getNumberOfPages();
+	}
+	
 	public void firstPageToHtml(String outFilename) throws IOException {
 		LinkedList<Slide> slides = new LinkedList<Slide>();
 		int countElems = 0;
@@ -79,8 +86,40 @@ public class PDFSlidesExporter {
 		PrintWriter p = new PrintWriter(w);
 		p.print(s.toHTML());
 		p.close();
-		
+	}
+	
+	public void showPageCount() throws IOException {
+		PDPage page = doc.getPage(0);
+		//page.get
+		SlideExtractor se = new SlideExtractor(page);
+		int n = se.countImages();
+		System.out.println("First page: "+n + " images");
+		//TODO: all pages
 
+	}
+	
+	
+	public void exportImages() throws IOException {
+		//TODO: name pattern as argument
+		/* TODO: maybe this method should belong to a different class. 
+		 * For example, general class SlidesExporter, and 
+		 * PDFSlidesExporter and ImageSlidesExporter inheriting (or just change 
+		 * the name of this)
+		 */
+		PDPage page = doc.getPage(0);
+		SlideExtractor se = new SlideExtractor(page);
+		se.run();
+		
+		for(int i=0; i<se.countImages(); i++) {
+			ImageFrame ifr = se.getImage(i);
+			BufferedImage img = ifr.getImage();
+			String name = String.format("out/img-%d.jpg", i);
+			File file = new File(name);
+			javax.imageio.ImageIO.write(img, "jpg", file);
+		}
+		
+		
+		
 	}
 	
 	public void allPagesToText(String outFilename) throws IOException {

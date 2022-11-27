@@ -22,16 +22,16 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
-import org.sj.tools.graphics.elements.Image;
+import org.sj.tools.graphics.elements.ImageFrame;
 
-public class SldImage extends Image implements SldObject {
+public class SldImage extends ImageFrame implements SldObject {
 	
 	public SldImage(Point2D _position, BufferedImage _image) {
 		super(_position, _image);
 	}
 
 
-	public SldImage(Image img) {
+	public SldImage(ImageFrame img) {
 		super(img);
 	}
 
